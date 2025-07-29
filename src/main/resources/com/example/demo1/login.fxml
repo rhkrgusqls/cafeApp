@@ -7,9 +7,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Text?>
 
-<GridPane xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.loginController">
+<GridPane xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.LoginController">
    <columnConstraints>
-      <ColumnConstraints />
+      <ColumnConstraints fillWidth="false" />
       <ColumnConstraints />
       <ColumnConstraints />
       <ColumnConstraints />
@@ -25,5 +25,6 @@
       <TextField fx:id="passwordField" GridPane.columnIndex="3" GridPane.rowIndex="1" />
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password" GridPane.rowIndex="1" />
       <Button mnemonicParsing="false" onAction="#onLoginButtonClick" prefHeight="22.0" prefWidth="161.0" text="Login" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+      <Button fx:id="SignUpBtn" mnemonicParsing="false" onAction="#onSignUpBtnClick" prefHeight="22.0" prefWidth="72.0" text="SignUp" GridPane.rowIndex="2" />
    </children>
 </GridPane>
