@@ -10,6 +10,8 @@ module com.example.demo1 {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires java.net.http;
+    requires org.json;
 
     opens com.example.demo1 to javafx.fxml;
     exports com.example.demo1;

@@ -10,6 +10,12 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.event.*;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import org.json.JSONObject;
+
 
 public class LoginController {
     @FXML
@@ -19,17 +25,40 @@ public class LoginController {
     private TextField passwordField;
 
     @FXML
-    protected void onLoginButtonClick() {
-        String username = usernameField.getText();
-        String password = passwordField.getText();
+    protected void onLoginButtonClick(ActionEvent event) {
+        try {
+            String username = usernameField.getText();
+            String password = passwordField.getText();
 
-        if ("admin".equals(username) && "1234".equals(password)) {
-            showAlert("로그인 성공", "환영합니다!");
-        } else {
-            showAlert("로그인 실패", "아이디 또는 비밀번호가 틀렸습니다.");
+            String requestBody = String.format("{\"username\":\"%s\", \"password\":\"%s\"}", username, password);
+            System.out.println("요청 바디: " + requestBody);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/auth/login"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                String body = response.body();
+
+                JSONObject json = new JSONObject(body);
+                boolean success = json.getBoolean("success");
+                String message = json.getString("message");
+
+                showAlert(success ? "로그인 성공" : "로그인 실패", message);
+            } else {
+                showAlert("오류", "서버 오류 발생: " + response.statusCode());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("예외 발생", e.getMessage());
         }
     }
-
     @FXML
     protected void onSignUpBtnClick(ActionEvent event) {
         try {
