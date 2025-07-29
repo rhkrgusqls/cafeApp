@@ -7,31 +7,40 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 
 public class RegisterController {
 
     @FXML
-    private TextField regIdField;
+    private TextField regId;
     @FXML
-    private TextField regPasswordField;
+    private TextField regPw;
+    @FXML
+    private TextField storeId;
     @FXML
     private Button sameButton;
     @FXML
     private Button signUpButton;
     @FXML
     private Button backButton;
+    @FXML
+    private Text sameText;
+
 
     @FXML
     protected void onSameButtonClick() {
-        String regId = regIdField.getText();
+        if (regId.equals("")) {
+            sameText.setVisible(true);
+        }else{
+            sameText.setText("중복된 ID값이거나 잘못된 값입니다.");
+            sameText.setVisible(true);
+        }
     }
 
     @FXML
     protected void onSignUpButtonClick() {
-        String regId = regIdField.getText();
-        String regPassword = regPasswordField.getText();
     }
 
     @FXML
