@@ -14,10 +14,11 @@ module com.example.demo1 {
     requires org.json;
     requires com.fasterxml.jackson.databind;
 
-    opens com.example.demo1.dto to com.fasterxml.jackson.databind;
-
     opens com.example.demo1 to javafx.fxml;
+    opens com.example.demo1.controller to javafx.fxml;
+
+    opens com.example.demo1.dto to com.fasterxml.jackson.databind, javafx.base;
+
     exports com.example.demo1;
     exports com.example.demo1.controller;
-    opens com.example.demo1.controller to javafx.fxml;
 }
