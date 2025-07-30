@@ -1,5 +1,7 @@
-package com.example.demo1;
+package com.example.demo1.controller;
 
+import com.example.demo1.dto.SignUpDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,8 +35,6 @@ public class RegisterController {
     @FXML
     private Text sameText;
 
-
-
     @FXML
     protected void onSignUpButtonClick() {
         try {
@@ -42,11 +42,11 @@ public class RegisterController {
             String password = regPwField.getText();
             String storeName = storeNameField.getText();
 
+            SignUpDTO signUpDTO = new SignUpDTO(affiliationCode, password, storeName);
 
-            String requestBody = String.format
-                    ("{\"affiliationCode\":\"%s\", " +
-                            "\"password\":\"%s\", " +
-                            "\"storeName\":\"%s\"}", affiliationCode, password, storeName);
+            ObjectMapper objectMapper = new ObjectMapper();
+            String requestBody = objectMapper.writeValueAsString(signUpDTO);
+
             System.out.println("요청 바디: " + requestBody);
 
             HttpRequest request = HttpRequest.newBuilder()
@@ -65,7 +65,7 @@ public class RegisterController {
                 boolean success = json.getBoolean("success");
                 String message = json.getString("message");
 
-                showAlert(success ? "로그인 성공" : "회원가입 성공", message);
+                showAlert(success ? "회원가입 성공" : "회원가입 실패", message);
             } else {
                 showAlert("오류", "서버 오류 발생: " + response.statusCode());
             }
