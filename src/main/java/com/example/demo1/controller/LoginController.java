@@ -1,5 +1,7 @@
-package com.example.demo1;
+package com.example.demo1.controller;
 
+import com.example.demo1.dto.LoginDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -30,7 +32,11 @@ public class LoginController {
             String affiliationCode = affiliationCodeField.getText();
             String password = passwordField.getText();
 
-            String requestBody = String.format("{\"affiliationCode\":\"%s\", \"password\":\"%s\"}", affiliationCode, password);
+            LoginDTO loginDTO = new LoginDTO(affiliationCode, password);
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            String requestBody = objectMapper.writeValueAsString(loginDTO);
+
             System.out.println("요청 바디: " + requestBody);
 
             HttpRequest request = HttpRequest.newBuilder()
@@ -50,6 +56,20 @@ public class LoginController {
                 String message = json.getString("message");
 
                 showAlert(success ? "로그인 성공" : "로그인 실패", message);
+
+                if (success) {
+                    String fxmlFile = affiliationCode.equals("101")
+                            ? "/com/example/demo1/storeManagement.fxml"
+                            : "/com/example/demo1/stuffManagement.fxml";
+
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+                    Parent root = loader.load();
+
+                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    stage.setScene(new Scene(root));
+                    stage.show();
+                }
+
             } else {
                 showAlert("오류", "서버 오류 발생: " + response.statusCode());
             }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="538.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.controller.StoreManagementController">
+   <children>
+      <Circle fill="#ffe52194" layoutX="61.0" layoutY="61.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
+      <Circle fill="#fbff2194" layoutX="108.0" layoutY="-12.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
+      <Circle fill="#ffe12197" layoutX="-19.0" layoutY="101.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
+      <Text layoutX="1.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stuff Management" wrappingWidth="320.109375">
+         <font>
+            <Font name="Edwardian Script ITC" size="52.0" />
+         </font>
+      </Text>
+      <AnchorPane layoutX="78.0" layoutY="88.0" prefHeight="389.0" prefWidth="701.0">
+         <children>
+            <TableView layoutX="8.0" layoutY="7.0" prefHeight="360.0" prefWidth="691.0">
+               <columns>
+                  <TableColumn prefWidth="56.0" text="Number" />
+                  <TableColumn prefWidth="75.0" text="ItemID" />
+                  <TableColumn prefWidth="77.0" text="Quantity" />
+                  <TableColumn prefWidth="91.0" text="Expire_date" />
+                  <TableColumn prefWidth="91.0" text="Received_date" />
+                  <TableColumn prefWidth="91.0" text="Status" />
+                  <TableColumn prefWidth="91.0" text="AffiliationCode" />
+                  <TableColumn prefWidth="118.0" text="Mode" />
+               </columns>
+            </TableView>
+         </children>
+      </AnchorPane>
+      <Button layoutX="790.0" layoutY="14.0" mnemonicParsing="false" text="Logout" />
+   </children>
+</AnchorPane>
