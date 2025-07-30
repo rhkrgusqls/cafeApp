@@ -19,7 +19,7 @@ import org.json.JSONObject;
 
 public class LoginController {
     @FXML
-    private TextField usernameField;
+    private TextField affiliationCodeField;
 
     @FXML
     private TextField passwordField;
@@ -27,10 +27,10 @@ public class LoginController {
     @FXML
     protected void onLoginButtonClick(ActionEvent event) {
         try {
-            String username = usernameField.getText();
+            String affiliationCode = affiliationCodeField.getText();
             String password = passwordField.getText();
 
-            String requestBody = String.format("{\"username\":\"%s\", \"password\":\"%s\"}", username, password);
+            String requestBody = String.format("{\"affiliationCode\":\"%s\", \"password\":\"%s\"}", affiliationCode, password);
             System.out.println("요청 바디: " + requestBody);
 
             HttpRequest request = HttpRequest.newBuilder()
