@@ -123,7 +123,7 @@ public class StoreManagementController implements Initializable {
 
     @FXML
     private void onLogout(ActionEvent event) {
-        URL fxmlUrl = getClass().getResource("/com/example/demo1/view/login.fxml");
+        URL fxmlUrl = getClass().getResource("/com/example/demo1/login.fxml");
         System.out.println("FXML 경로: " + fxmlUrl); // null이면 경로 문제
 
         try {
