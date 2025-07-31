@@ -36,11 +36,12 @@
             </TableView>
          </children>
       </AnchorPane>
-      <Button fx:id="logoutBtn" layoutX="779.0" layoutY="19.0" mnemonicParsing="false" onAction="#onLogout" text="Logout" />
+      <Button fx:id="logoutBtn" layoutX="779.0" layoutY="19.0" mnemonicParsing="false" onAction="#onLogout" text="로그아웃" />
       <Text fx:id="affiliationNum" layoutX="772.0" layoutY="512.0" strokeType="OUTSIDE" strokeWidth="0.0" text="101">
          <font>
             <Font name="Impact" size="52.0" />
          </font>
       </Text>
+      <Button fx:id="requestBtn" layoutX="704.0" layoutY="19.0" mnemonicParsing="false" onAction="#onRequestBtn" text="재고 요청" />
    </children>
 </AnchorPane>

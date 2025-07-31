@@ -35,6 +35,7 @@ public class StuffManagementController implements Initializable {
     @FXML private TableColumn<StuffDTO, String> colMode;
 
     @FXML private Button logoutBtn;
+    @FXML private Button requestBtn;
     @FXML private Text affiliationNum;
 
     private String loginAffiliationCode;    // 로그인한 사용자
@@ -111,15 +112,16 @@ public class StuffManagementController implements Initializable {
 
         if ("101".equals(loginCode) && !loginCode.equals(viewCode)) {
             logoutBtn.setVisible(false);
+            requestBtn.setVisible(false);
             logoutBtn.setManaged(false);
         } else {
             logoutBtn.setVisible(true);
+            requestBtn.setVisible(true);
             logoutBtn.setManaged(true);
         }
 
         loadStuffList();
     }
-
 
     private void loadStuffList() {
         new Thread(() -> {
@@ -159,6 +161,32 @@ public class StuffManagementController implements Initializable {
             }
         }).start();
     }
+
+    private void openItemRequestPopup(String affiliationCode) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/requestForm.fxml"));
+            Parent root = loader.load();
+
+            RequestFormController controller = loader.getController();
+            controller.setAffiliationContext(affiliationCode); // 이제는 itemId, quantity는 입력 받음
+
+            Stage stage = new Stage();
+            stage.setTitle("재고 요청");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void onRequestBtn() {
+        openItemRequestPopup(loginAffiliationCode);  // 현재 로그인한 점포 코드 전달
+    }
+
+
 
     @FXML
     private void onLogout() {
