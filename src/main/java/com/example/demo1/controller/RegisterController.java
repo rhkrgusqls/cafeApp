@@ -79,7 +79,7 @@ public class RegisterController {
     @FXML
     protected void onBackBtnClick(ActionEvent event) {
         try {
-            Parent login = FXMLLoader.load(getClass().getResource("login.fxml"));
+            Parent login = FXMLLoader.load(getClass().getResource("/com/example/demo1/login.fxml"));
             Scene secondScene = new Scene(login);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

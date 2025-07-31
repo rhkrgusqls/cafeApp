@@ -50,19 +50,32 @@ public class StuffManagementController implements Initializable {
     private void loadStuffList() {
         new Thread(() -> {
             try {
-                String urlStr = "http://localhost:8080/itemStock/list?affiliationCode=" + URLEncoder.encode(affiliationCode, "UTF-8");
-
-                URL url = new URL(urlStr);
+                URL url = new URL("http://localhost:8080/itemStock/list");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
 
-                InputStream is = conn.getInputStream();
-                ObjectMapper mapper = new ObjectMapper();
-                StuffDTO[] items = mapper.readValue(is, StuffDTO[].class);
+                // JSON 바디 작성
+                String jsonBody = String.format("{\"affiliationCode\":\"%s\"}", affiliationCode);
+                try (java.io.OutputStream os = conn.getOutputStream()) {
+                    byte[] input = jsonBody.getBytes("utf-8");
+                    os.write(input, 0, input.length);
+                }
 
-                Platform.runLater(() -> {
-                    stuffTable.getItems().setAll(items);
-                });
+                int responseCode = conn.getResponseCode();
+                if (responseCode == 200) {
+                    InputStream is = conn.getInputStream();
+                    ObjectMapper mapper = new ObjectMapper();
+                    StuffDTO[] items = mapper.readValue(is, StuffDTO[].class);
+
+                    Platform.runLater(() -> stuffTable.getItems().setAll(items));
+                } else {
+                    Platform.runLater(() ->
+                            stuffTable.setPlaceholder(new Label("서버 오류: " + responseCode))
+                    );
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -72,4 +85,5 @@ public class StuffManagementController implements Initializable {
             }
         }).start();
     }
+
 }
