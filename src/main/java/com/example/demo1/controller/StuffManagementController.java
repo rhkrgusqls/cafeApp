@@ -67,6 +67,37 @@ public class StuffManagementController implements Initializable {
 
         colAffiliationCode.setCellValueFactory(new PropertyValueFactory<>("affiliationCode"));
         colMode.setCellValueFactory(new PropertyValueFactory<>("mode"));
+
+        stuffTable.setRowFactory(tv -> {
+            TableRow<StuffDTO> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty() && event.getClickCount() == 2) {
+                    StuffDTO clickedRow = row.getItem();
+                    openItemInfoPopup(clickedRow.getItemId());
+                }
+            });
+            return row;
+        });
+
+    }
+
+    private void openItemInfoPopup(int itemId) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/itemlist.fxml"));
+            Parent root = loader.load();
+
+            // Controller 연결 및 데이터 전달
+            ItemInfoController controller = loader.getController();
+            controller.setItemId(itemId); // 해당 itemId 설정 및 정보 조회
+
+            Stage stage = new Stage();
+            stage.setTitle("상품 정보");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false); // 창 크기 고정
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setAffiliationContext(String loginCode, String viewCode) {
