@@ -1,7 +1,7 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.cell.ModeButtonCell;
-import com.example.demo1.dto.AffiliationListResponse;
+import com.example.demo1.dto.AffiliationDTO;
 import com.example.demo1.dto.SignUpDTO;
 import com.example.demo1.dto.StoreDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,6 +37,8 @@ public class StoreManagementController implements Initializable {
     @FXML private TextField passwordField;
     @FXML private TextField storeNameField;
 
+    private String loginAffiliationCode;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         colAffiliationCode.setCellValueFactory(new PropertyValueFactory<>("affiliationCode"));
@@ -45,6 +47,10 @@ public class StoreManagementController implements Initializable {
         colMode.setCellFactory(param -> new ModeButtonCell(this));
 
         loadStoreList(); // 초기 테이블 데이터 불러오기
+    }
+
+    public void setLoginAffiliationCode(String code) {
+        this.loginAffiliationCode = code;
     }
 
     private void loadStoreList() {
@@ -67,7 +73,7 @@ public class StoreManagementController implements Initializable {
 
             InputStream is = conn.getInputStream();
             ObjectMapper mapper = new ObjectMapper();
-            AffiliationListResponse response = mapper.readValue(is, AffiliationListResponse.class);
+            AffiliationDTO response = mapper.readValue(is, AffiliationDTO.class);
             return response.getAffiliationList();
         } catch (Exception e) {
             e.printStackTrace();
@@ -129,7 +135,6 @@ public class StoreManagementController implements Initializable {
     @FXML
     private void onLogout(ActionEvent event) {
         URL fxmlUrl = getClass().getResource("/com/example/demo1/login.fxml");
-        System.out.println("FXML 경로: " + fxmlUrl); // null이면 경로 문제
 
         try {
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
@@ -137,6 +142,8 @@ public class StoreManagementController implements Initializable {
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -148,13 +155,16 @@ public class StoreManagementController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/stuffManagement.fxml"));
             Parent root = loader.load();
 
-            // controller에 affiliationCode 전달
             StuffManagementController controller = loader.getController();
-            controller.setAffiliationCode(store.getAffiliationCode());
+
+            // 본점이 로그인한 상태에서 store 테이블에서 다른 분점 클릭했을 경우
+            controller.setAffiliationContext(this.loginAffiliationCode, store.getAffiliationCode());
 
             Stage stage = new Stage();
             stage.setTitle("Stuff Management");
             stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -203,8 +213,6 @@ public class StoreManagementController implements Initializable {
             }
         }).start();
     }
-
-
 
     private void clearFields() {
         affiliationCodeField.clear();
