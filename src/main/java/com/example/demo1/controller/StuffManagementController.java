@@ -37,6 +37,24 @@ public class StuffManagementController implements Initializable {
         colExpireDate.setCellValueFactory(new PropertyValueFactory<>("expireDate"));
         colReceivedDate.setCellValueFactory(new PropertyValueFactory<>("receivedDate"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+        colStatus.setCellFactory(column -> new TableCell<StuffDTO, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item);
+                    if ("defective".equalsIgnoreCase(item)) {
+                        setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                    } else {
+                        setStyle("");
+                    }
+                }
+            }
+        });
+
         colAffiliationCode.setCellValueFactory(new PropertyValueFactory<>("affiliationCode"));
         colMode.setCellValueFactory(new PropertyValueFactory<>("mode"));
     }
