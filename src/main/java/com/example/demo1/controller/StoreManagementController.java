@@ -1,7 +1,7 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.cell.ModeButtonCell;
-import com.example.demo1.dto.AffiliationListResponse;
+import com.example.demo1.dto.AffiliationDTO;
 import com.example.demo1.dto.SignUpDTO;
 import com.example.demo1.dto.StoreDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -73,7 +73,7 @@ public class StoreManagementController implements Initializable {
 
             InputStream is = conn.getInputStream();
             ObjectMapper mapper = new ObjectMapper();
-            AffiliationListResponse response = mapper.readValue(is, AffiliationListResponse.class);
+            AffiliationDTO response = mapper.readValue(is, AffiliationDTO.class);
             return response.getAffiliationList();
         } catch (Exception e) {
             e.printStackTrace();
@@ -142,6 +142,7 @@ public class StoreManagementController implements Initializable {
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -161,6 +162,7 @@ public class StoreManagementController implements Initializable {
             Stage stage = new Stage();
             stage.setTitle("Stuff Management");
             stage.setScene(new Scene(root));
+            stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

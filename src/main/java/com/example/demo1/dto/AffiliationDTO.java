@@ -4,7 +4,7 @@ package com.example.demo1.dto;
 
 import java.util.List;
 
-public class AffiliationListResponse {
+public class AffiliationDTO {
     private List<StoreDTO> affiliationList;
 
     public List<StoreDTO> getAffiliationList() {

@@ -161,6 +161,7 @@ public class StuffManagementController implements Initializable {
             Parent login = FXMLLoader.load(getClass().getResource("/com/example/demo1/login.fxml"));
             Stage stage = (Stage) logoutBtn.getScene().getWindow();
             stage.setScene(new Scene(login));
+            stage.setResizable(false);
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
