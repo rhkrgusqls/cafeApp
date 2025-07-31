@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.InputStream;
@@ -33,10 +34,8 @@ public class StuffManagementController implements Initializable {
     @FXML private TableColumn<StuffDTO, String> colAffiliationCode;
     @FXML private TableColumn<StuffDTO, String> colMode;
 
-    @FXML
-    private Button logoutBtn;
-
-    private String affiliationCode; // 외부에서 설정
+    @FXML private Button logoutBtn;
+    @FXML private Text affiliationNum;
 
     private String loginAffiliationCode;    // 로그인한 사용자
     private String viewAffiliationCode;     // 조회 대상 분점
@@ -107,6 +106,8 @@ public class StuffManagementController implements Initializable {
     public void setAffiliationContext(String loginCode, String viewCode) {
         this.loginAffiliationCode = loginCode;
         this.viewAffiliationCode = viewCode;
+
+        this.affiliationNum.setText(viewAffiliationCode);
 
         if ("101".equals(loginCode) && !loginCode.equals(viewCode)) {
             logoutBtn.setVisible(false);

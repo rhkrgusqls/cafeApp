@@ -20,11 +20,8 @@ import org.json.JSONObject;
 
 
 public class LoginController {
-    @FXML
-    private TextField affiliationCodeField;
-
-    @FXML
-    private TextField passwordField;
+    @FXML private TextField affiliationCodeField;
+    @FXML private TextField passwordField;
 
     @FXML
     protected void onLoginButtonClick(ActionEvent event) {
@@ -72,7 +69,6 @@ public class LoginController {
                         stage.setResizable(false);
                         stage.centerOnScreen();
                         stage.show();
-
                     } else {
                         // 분점 로그인: stuffManagement.fxml로 이동
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/stuffManagement.fxml"));
@@ -89,8 +85,6 @@ public class LoginController {
                         stage.show();
                     }
                 }
-
-
             } else {
                 showAlert("오류", "서버 오류 발생: " + response.statusCode());
             }

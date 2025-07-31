@@ -6,8 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 
 public class ModeBtnsController {
-    @FXML
-    private Button viewButton;
+    @FXML private Button viewButton;
     @FXML private Button deleteButton;
 
     private final StoreManagementController mainController;
