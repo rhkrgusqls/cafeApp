@@ -4,9 +4,13 @@ import com.example.demo1.dto.StuffDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -27,7 +31,13 @@ public class StuffManagementController implements Initializable {
     @FXML private TableColumn<StuffDTO, String> colAffiliationCode;
     @FXML private TableColumn<StuffDTO, String> colMode;
 
+    @FXML
+    private Button logoutBtn;
+
     private String affiliationCode; // 외부에서 설정
+
+    private String loginAffiliationCode;    // 로그인한 사용자
+    private String viewAffiliationCode;     // 조회 대상 분점
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -59,11 +69,21 @@ public class StuffManagementController implements Initializable {
         colMode.setCellValueFactory(new PropertyValueFactory<>("mode"));
     }
 
-    // StoreManagementController에서 호출 시 affiliationCode를 전달
-    public void setAffiliationCode(String affiliationCode) {
-        this.affiliationCode = affiliationCode;
+    public void setAffiliationContext(String loginCode, String viewCode) {
+        this.loginAffiliationCode = loginCode;
+        this.viewAffiliationCode = viewCode;
+
+        if ("101".equals(loginCode) && !loginCode.equals(viewCode)) {
+            logoutBtn.setVisible(false);
+            logoutBtn.setManaged(false);
+        } else {
+            logoutBtn.setVisible(true);
+            logoutBtn.setManaged(true);
+        }
+
         loadStuffList();
     }
+
 
     private void loadStuffList() {
         new Thread(() -> {
@@ -76,7 +96,7 @@ public class StuffManagementController implements Initializable {
                 conn.setDoOutput(true);
 
                 // JSON 바디 작성
-                String jsonBody = String.format("{\"affiliationCode\":\"%s\"}", affiliationCode);
+                String jsonBody = String.format("{\"affiliationCode\":\"%s\"}", viewAffiliationCode);
                 try (java.io.OutputStream os = conn.getOutputStream()) {
                     byte[] input = jsonBody.getBytes("utf-8");
                     os.write(input, 0, input.length);
@@ -102,6 +122,18 @@ public class StuffManagementController implements Initializable {
                 );
             }
         }).start();
+    }
+
+    @FXML
+    private void onLogout() {
+        try {
+            Parent login = FXMLLoader.load(getClass().getResource("/com/example/demo1/login.fxml"));
+            Stage stage = (Stage) logoutBtn.getScene().getWindow();
+            stage.setScene(new Scene(login));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

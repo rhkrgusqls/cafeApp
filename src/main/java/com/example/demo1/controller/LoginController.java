@@ -58,17 +58,34 @@ public class LoginController {
                 showAlert(success ? "로그인 성공" : "로그인 실패", message);
 
                 if (success) {
-                    String fxmlFile = affiliationCode.equals("101")
-                            ? "/com/example/demo1/storeManagement.fxml"
-                            : "/com/example/demo1/stuffManagement.fxml";
+                    if (affiliationCode.equals("101")) {
+                        // 본점 로그인: storeManagement.fxml로 이동
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/storeManagement.fxml"));
+                        Parent root = loader.load();
 
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
-                    Parent root = loader.load();
+                        // StoreManagementController가 로그인 지점 코드 기억하게 하기
+                        StoreManagementController controller = loader.getController();
+                        controller.setLoginAffiliationCode("101");
 
-                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                    stage.setScene(new Scene(root));
-                    stage.show();
+                        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                        stage.setScene(new Scene(root));
+                        stage.show();
+
+                    } else {
+                        // 분점 로그인: stuffManagement.fxml로 이동
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/stuffManagement.fxml"));
+                        Parent root = loader.load();
+
+                        // 로그인자와 조회 대상 모두 자신
+                        StuffManagementController controller = loader.getController();
+                        controller.setAffiliationContext(affiliationCode, affiliationCode);
+
+                        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                        stage.setScene(new Scene(root));
+                        stage.show();
+                    }
                 }
+
 
             } else {
                 showAlert("오류", "서버 오류 발생: " + response.statusCode());
