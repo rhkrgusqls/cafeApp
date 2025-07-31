@@ -16,11 +16,10 @@ public class LoginApplication extends Application {
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/coffee.png")));
         stage.setTitle("Cafe Stuff Management System");
         stage.setScene(scene);
-        stage.setResizable(false);
-        stage.centerOnScreen();
+        stage.setResizable(false); // 화면 크기 고정
+        stage.centerOnScreen(); // 초기 위치(모니터 가운데)
         stage.show();
     }
-
     public static void main(String[] args) {
         launch();
     }

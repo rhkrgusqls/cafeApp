@@ -21,19 +21,13 @@ import java.net.http.HttpResponse;
 
 public class RegisterController {
 
-    @FXML
-    private TextField affiliationCodeField;
-    @FXML
-    private TextField regPwField;
-    @FXML
-    private TextField storeNameField;
+    @FXML private TextField affiliationCodeField;
+    @FXML private TextField regPwField;
+    @FXML private TextField storeNameField;
 
-    @FXML
-    private Button signUpButton;
-    @FXML
-    private Button backButton;
-    @FXML
-    private Text sameText;
+    @FXML private Button signUpButton;
+    @FXML private Button backButton;
+    @FXML private Text sameText;
 
     @FXML
     protected void onSignUpButtonClick() {
