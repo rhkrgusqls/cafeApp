@@ -143,6 +143,7 @@ public class StoreManagementController implements Initializable {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setResizable(false);
+            stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -163,6 +164,7 @@ public class StoreManagementController implements Initializable {
             stage.setTitle("Stuff Management");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
+            stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

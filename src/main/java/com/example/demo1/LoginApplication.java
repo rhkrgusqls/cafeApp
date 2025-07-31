@@ -17,6 +17,7 @@ public class LoginApplication extends Application {
         stage.setTitle("Cafe Stuff Management System");
         stage.setScene(scene);
         stage.setResizable(false);
+        stage.centerOnScreen();
         stage.show();
     }
 

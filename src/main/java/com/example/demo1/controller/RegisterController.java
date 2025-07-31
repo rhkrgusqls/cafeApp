@@ -86,6 +86,7 @@ public class RegisterController {
 
             stage.setScene(secondScene);
             stage.setResizable(false);
+            stage.centerOnScreen();
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();

@@ -70,6 +70,7 @@ public class LoginController {
                         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                         stage.setScene(new Scene(root));
                         stage.setResizable(false);
+                        stage.centerOnScreen();
                         stage.show();
 
                     } else {
@@ -84,6 +85,7 @@ public class LoginController {
                         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                         stage.setScene(new Scene(root));
                         stage.setResizable(false);
+                        stage.centerOnScreen();
                         stage.show();
                     }
                 }
@@ -108,6 +110,7 @@ public class LoginController {
 
             stage.setScene(secondScene);
             stage.setResizable(false);
+            stage.centerOnScreen();
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();

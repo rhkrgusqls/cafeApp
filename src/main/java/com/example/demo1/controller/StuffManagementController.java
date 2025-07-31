@@ -94,6 +94,7 @@ public class StuffManagementController implements Initializable {
             stage.setTitle("상품 정보");
             stage.setScene(new Scene(root));
             stage.setResizable(false); // 창 크기 고정
+            stage.centerOnScreen();
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -162,6 +163,7 @@ public class StuffManagementController implements Initializable {
             Stage stage = (Stage) logoutBtn.getScene().getWindow();
             stage.setScene(new Scene(login));
             stage.setResizable(false);
+            stage.centerOnScreen();
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
