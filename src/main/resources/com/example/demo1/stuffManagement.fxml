@@ -22,14 +22,16 @@
          <children>
             <TableView fx:id="stuffTable" layoutX="8.0" layoutY="7.0" prefHeight="360.0" prefWidth="691.0">
                <columns>
-                  <TableColumn fx:id="colNumber" prefWidth="56.0" text="Number" />
-                  <TableColumn fx:id="colItemID" prefWidth="75.0" text="ItemID" />
-                  <TableColumn fx:id="colQuantity" prefWidth="77.0" text="Quantity" />
-                  <TableColumn fx:id="colExpireDate" prefWidth="91.0" text="Expire_date" />
-                  <TableColumn fx:id="colReceivedDate" prefWidth="91.0" text="Received_date" />
-                  <TableColumn fx:id="colStatus" prefWidth="91.0" text="Status" />
-                  <TableColumn fx:id="colAffiliationCode" prefWidth="91.0" text="AffiliationCode" />
-                  <TableColumn fx:id="colMode" prefWidth="118.0" text="Mode" />
+                  <TableColumn fx:id="colNumber" prefWidth="43.0" text="Number" />
+                  <TableColumn fx:id="colItemID" prefWidth="49.0" text="ItemID" />
+                  <TableColumn fx:id="colName" prefWidth="40.0" text="Name" />
+                  <TableColumn fx:id="colCategory" prefWidth="54.0" text="Category" />
+                  <TableColumn fx:id="colQuantity" prefWidth="54.0" text="Quantity" />
+                  <TableColumn fx:id="colReceivedDate" prefWidth="86.0" text="Received_date" />
+                  <TableColumn fx:id="colStatus" prefWidth="43.0" text="Status" />
+                  <TableColumn fx:id="colAffiliationCode" prefWidth="89.0" text="AffiliationCode" />
+                  <TableColumn fx:id="colExpireDate" prefWidth="74.0" text="Expire_date" />
+                  <TableColumn fx:id="colMode" prefWidth="158.0" text="Mode" />
                </columns>
             </TableView>
          </children>

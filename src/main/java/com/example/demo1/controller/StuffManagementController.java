@@ -24,6 +24,8 @@ public class StuffManagementController implements Initializable {
 
     @FXML private TableColumn<StuffDTO, Integer> colNumber;
     @FXML private TableColumn<StuffDTO, String> colItemID;
+    @FXML private TableColumn<StuffDTO, String> colName;
+    @FXML private TableColumn<StuffDTO, String> colCategory;
     @FXML private TableColumn<StuffDTO, Integer> colQuantity;
     @FXML private TableColumn<StuffDTO, String> colExpireDate;
     @FXML private TableColumn<StuffDTO, String> colReceivedDate;
@@ -41,12 +43,16 @@ public class StuffManagementController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        colNumber.setCellValueFactory(new PropertyValueFactory<>("stockId"));       // number → stockId
-        colItemID.setCellValueFactory(new PropertyValueFactory<>("itemId"));        // itemID → itemId
+        colNumber.setCellValueFactory(new PropertyValueFactory<>("stockId"));
+        colItemID.setCellValueFactory(new PropertyValueFactory<>("itemId"));
+        colName.setCellValueFactory(new PropertyValueFactory<>("itemName"));   // 추가
+        colCategory.setCellValueFactory(new PropertyValueFactory<>("itemCategory")); // 추가
         colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        colExpireDate.setCellValueFactory(new PropertyValueFactory<>("expireDate"));
         colReceivedDate.setCellValueFactory(new PropertyValueFactory<>("receivedDate"));
+        colExpireDate.setCellValueFactory(new PropertyValueFactory<>("expireDate"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+        colAffiliationCode.setCellValueFactory(new PropertyValueFactory<>("affiliationCode"));
+        colMode.setCellValueFactory(new PropertyValueFactory<>("mode"));
         colStatus.setCellFactory(column -> new TableCell<StuffDTO, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -64,9 +70,6 @@ public class StuffManagementController implements Initializable {
                 }
             }
         });
-
-        colAffiliationCode.setCellValueFactory(new PropertyValueFactory<>("affiliationCode"));
-        colMode.setCellValueFactory(new PropertyValueFactory<>("mode"));
 
         stuffTable.setRowFactory(tv -> {
             TableRow<StuffDTO> row = new TableRow<>();
