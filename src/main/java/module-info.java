@@ -13,6 +13,8 @@ module com.example.demo1 {
     requires java.net.http;
     requires org.json;
     requires com.fasterxml.jackson.databind;
+    requires spring.context;
+    requires spring.boot;
 
     opens com.example.demo1 to javafx.fxml;
     opens com.example.demo1.controller to javafx.fxml;

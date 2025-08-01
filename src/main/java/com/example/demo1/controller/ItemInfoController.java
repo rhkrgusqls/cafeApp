@@ -1,6 +1,7 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.dto.ItemDTO;
+import com.example.demo1.properties.ConfigLoader;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
@@ -21,7 +22,7 @@ public class ItemInfoController {
     public void setItemId(int itemId) {
         new Thread(() -> {
             try {
-                URL url = new URL("http://localhost:8080/items/list");
+                URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/items/list");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Accept", "application/json");
