@@ -46,6 +46,18 @@ public class StoreManagementController implements Initializable {
 
         colMode.setCellFactory(param -> new ModeButtonCell(this));
 
+        storeTable.setRowFactory(tv -> {
+            TableRow<StoreDTO> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty() && event.getClickCount() == 2) {
+                    StoreDTO clickedStore = row.getItem();
+                    String affiliationCode = clickedStore.getAffiliationCode();
+                    openRequestListPopup(affiliationCode);
+                }
+            });
+            return row;
+        });
+
         loadStoreList(); // 초기 테이블 데이터 불러오기
     }
 
@@ -146,6 +158,27 @@ public class StoreManagementController implements Initializable {
             stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void openRequestListPopup(String affiliationCode) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/requestlist.fxml"));
+            Parent root = loader.load();
+
+            RequestlistController controller = loader.getController();
+
+            // FXML 주입 완료 이후 실행되도록 보장
+            Platform.runLater(() -> controller.setAffiliationCode(affiliationCode));
+
+            Stage stage = new Stage();
+            stage.setTitle("주문 요청 - " + affiliationCode);
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

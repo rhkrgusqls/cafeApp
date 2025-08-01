@@ -36,10 +36,16 @@ public class RegisterController {
             String password = regPwField.getText();
             String storeName = storeNameField.getText();
 
+            if (affiliationCode.isEmpty() || password.isEmpty() || storeName.isEmpty()) {
+                showAlert("오류","모든 항목을 입력하세요.");
+                return;
+            }
+
             SignUpDTO signUpDTO = new SignUpDTO(affiliationCode, password, storeName);
 
             ObjectMapper objectMapper = new ObjectMapper();
             String requestBody = objectMapper.writeValueAsString(signUpDTO);
+
 
             System.out.println("요청 바디: " + requestBody);
 
