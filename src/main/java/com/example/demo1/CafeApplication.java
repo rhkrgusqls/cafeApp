@@ -8,10 +8,10 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class LoginApplication extends Application {
+public class CafeApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(LoginApplication.class.getResource("login.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(CafeApplication.class.getResource("login.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/coffee.png")));
         stage.setTitle("Cafe Stuff Management System");
