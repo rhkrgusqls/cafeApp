@@ -39,6 +39,17 @@ public class StoreManagementController implements Initializable {
 
     private String loginAffiliationCode;
 
+    private StuffManagementController stuffManagementController;
+
+    public StuffManagementController getStuffManagementController() {
+        return stuffManagementController;
+    }
+
+    private void initializeStuffManagementController() {
+        // stuffManagementController가 제대로 초기화되는지 확인
+        stuffManagementController = new StuffManagementController();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         colAffiliationCode.setCellValueFactory(new PropertyValueFactory<>("affiliationCode"));
@@ -183,6 +194,25 @@ public class StoreManagementController implements Initializable {
         }
     }
 
+    public void openAllStuffManagement() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/stuffManagement.fxml"));
+            Parent root = loader.load();
+
+            StuffManagementController controller = loader.getController();
+            controller.loadAllStock(); // 전체 조회 메서드 호출
+
+            Stage stage = new Stage();
+            stage.setTitle("Stuff Management");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void openStuffManagement(StoreDTO store) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/stuffManagement.fxml"));
@@ -203,7 +233,6 @@ public class StoreManagementController implements Initializable {
             e.printStackTrace();
         }
     }
-
 
     public void confirmDelete(StoreDTO store) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);

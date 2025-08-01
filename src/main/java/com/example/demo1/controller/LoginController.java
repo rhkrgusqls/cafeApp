@@ -8,7 +8,11 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.event.*;
 
@@ -21,7 +25,20 @@ import org.json.JSONObject;
 
 public class LoginController {
     @FXML private TextField affiliationCodeField;
-    @FXML private TextField passwordField;
+    @FXML private PasswordField passwordField;
+    @FXML private Button loginBtn;
+
+    @FXML
+    private AnchorPane rootPane; // 루트 FXML의 fx:id
+
+    @FXML
+    public void initialize() {
+        rootPane.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                loginBtn.fire();
+            }
+        });
+    }
 
     @FXML
     protected void onLoginButtonClick(ActionEvent event) {
@@ -33,8 +50,6 @@ public class LoginController {
 
             ObjectMapper objectMapper = new ObjectMapper();
             String requestBody = objectMapper.writeValueAsString(loginDTO);
-
-            System.out.println("요청 바디: " + requestBody);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/auth/login"))

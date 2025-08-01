@@ -27,12 +27,14 @@
             <Font name="Gulim" size="20.0" />
          </font>
       </Text>
-      <TextField fx:id="regPwField" layoutX="300.0" layoutY="180.0" prefHeight="22.0" prefWidth="192.0" />
       <TextField fx:id="affiliationCodeField" layoutX="300.0" layoutY="129.0" prefHeight="22.0" prefWidth="192.0" />
+      <TextField fx:id="regPwField" layoutX="300.0" layoutY="180.0" prefHeight="22.0" prefWidth="192.0" />
+      <TextField fx:id="storeNameField" layoutX="300.0" layoutY="234.0" prefHeight="22.0" prefWidth="192.0" />
+
       <Button fx:id="signUpButton" layoutX="421.0" layoutY="330.0" mnemonicParsing="false" onAction="#onSignUpButtonClick" prefHeight="33.0" prefWidth="71.0" text="SignUp" />
       <Text fx:id="sameText" fontSmoothingType="LCD" layoutX="300.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="사용 가능한 ID입니다." visible="false" wrappingWidth="192.0" />
       <Button fx:id="BackBtn" layoutX="300.0" layoutY="330.0" mnemonicParsing="false" onAction="#onBackBtnClick" prefHeight="33.0" prefWidth="71.0" text="Back" />
-      <TextField fx:id="storeNameField" layoutX="300.0" layoutY="234.0" prefHeight="22.0" prefWidth="192.0" />
+
       <Text fontSmoothingType="LCD" layoutX="110.0" layoutY="252.0" strokeType="OUTSIDE" strokeWidth="0.0" text="점포 명" wrappingWidth="104.109375">
          <font>
             <Font name="Gulim" size="20.0" />
