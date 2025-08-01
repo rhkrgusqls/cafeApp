@@ -1,6 +1,7 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.dto.LoginDTO;
+import com.example.demo1.properties.ConfigLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,7 +38,7 @@ public class LoginController {
             System.out.println("요청 바디: " + requestBody);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/auth/login"))
+                    .uri(URI.create("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/auth/login"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
@@ -55,14 +56,14 @@ public class LoginController {
                 showAlert(success ? "로그인 성공" : "로그인 실패", message);
 
                 if (success) {
-                    if (affiliationCode.equals("101")) {
+                    if (affiliationCode.equals(ConfigLoader.getManagerCode())) {
                         // 본점 로그인: storeManagement.fxml로 이동
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/storeManagement.fxml"));
                         Parent root = loader.load();
 
                         // StoreManagementController가 로그인 지점 코드 기억하게 하기
                         StoreManagementController controller = loader.getController();
-                        controller.setLoginAffiliationCode("101");
+                        controller.setLoginAffiliationCode(ConfigLoader.getManagerCode());
 
                         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                         stage.setScene(new Scene(root));

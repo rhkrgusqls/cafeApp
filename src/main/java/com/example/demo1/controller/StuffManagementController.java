@@ -1,6 +1,7 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.dto.StuffDTO;
+import com.example.demo1.properties.ConfigLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -110,7 +111,7 @@ public class StuffManagementController implements Initializable {
 
         this.affiliationNum.setText(viewAffiliationCode);
 
-        if ("101".equals(loginCode) && !loginCode.equals(viewCode)) {
+        if (ConfigLoader.getManagerCode().equals(loginCode) && !loginCode.equals(viewCode)) {
             logoutBtn.setVisible(false);
             requestBtn.setVisible(false);
             logoutBtn.setManaged(false);
@@ -126,7 +127,7 @@ public class StuffManagementController implements Initializable {
     private void loadStuffList() {
         new Thread(() -> {
             try {
-                URL url = new URL("http://localhost:8080/itemStock/list");
+                URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/itemStock/list");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json; utf-8");

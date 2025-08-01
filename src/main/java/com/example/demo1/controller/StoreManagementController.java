@@ -4,6 +4,7 @@ import com.example.demo1.cell.ModeButtonCell;
 import com.example.demo1.dto.AffiliationDTO;
 import com.example.demo1.dto.SignUpDTO;
 import com.example.demo1.dto.StoreDTO;
+import com.example.demo1.properties.ConfigLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -78,7 +79,7 @@ public class StoreManagementController implements Initializable {
 
     private List<StoreDTO> fetchStoresFromApi() {
         try {
-            URL url = new URL("http://localhost:8080/affiliation/list");
+            URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/affiliation/list");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
@@ -111,7 +112,7 @@ public class StoreManagementController implements Initializable {
 
         new Thread(() -> {
             try {
-                URL url = new URL("http://localhost:8080/register/signup");
+                URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/register/signup");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json");
@@ -225,7 +226,7 @@ public class StoreManagementController implements Initializable {
         new Thread(() -> {
             try {
                 String code = store.getAffiliationCode();
-                String urlStr = "http://localhost:8080/affiliation/delete?affiliationCode=" +
+                String urlStr = "http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/affiliation/delete?affiliationCode=" +
                         java.net.URLEncoder.encode(code, "UTF-8");
                 URL url = new URL(urlStr);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();

@@ -7,7 +7,6 @@ import java.util.Properties;
 public class ConfigLoader {
     private static Properties properties = new Properties();
 
-    // static initializer: 클래스 로딩 시 딱 한 번 실행
     static {
         try (InputStream input = ConfigLoader.class.getClassLoader().getResourceAsStream("application.properties")) {
             if (input == null) {
@@ -20,7 +19,6 @@ public class ConfigLoader {
         }
     }
 
-    // static 메서드로 접근
     public static String getIp() {
         return properties.getProperty("ip");
     }
@@ -30,4 +28,9 @@ public class ConfigLoader {
         if (portStr == null) return -1;
         return Integer.parseInt(portStr);
     }
+
+    public static String getManagerCode() {
+        return properties.getProperty("managerCode");
+    }
 }
+
