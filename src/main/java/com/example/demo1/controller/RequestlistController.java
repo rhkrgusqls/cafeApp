@@ -5,12 +5,16 @@ import com.example.demo1.properties.ConfigLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -26,6 +30,9 @@ public class RequestlistController implements Initializable {
     @FXML private TableColumn<OrderDTO, String> affiliationCodeColumn;
     @FXML private TableColumn<OrderDTO, String> stateColumn;
     @FXML private TableColumn<OrderDTO, String> orderDateColumn;
+
+    @FXML private TableColumn<OrderDTO, String> modeColumn;
+
 
     private String affiliationCode;
 
@@ -67,5 +74,37 @@ public class RequestlistController implements Initializable {
         affiliationCodeColumn.setCellValueFactory(new PropertyValueFactory<>("affiliationCode"));
         stateColumn.setCellValueFactory(new PropertyValueFactory<>("state"));
         orderDateColumn.setCellValueFactory(new PropertyValueFactory<>("orderDate"));
+        modeColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                TableView<OrderDTO> table = getTableView();  // 안전하게 가져오기
+
+                if (empty || getIndex() >= table.getItems().size()) {
+                    setGraphic(null);
+                    return;
+                }
+
+                OrderDTO order = table.getItems().get(getIndex());
+
+                if ("wait".equalsIgnoreCase(order.getState())) {
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/requestBtn1.fxml"));
+                        Node node = loader.load();
+                        RequestBtn1Controller controller = loader.getController();
+
+                        controller.setOrder(order, table);
+
+                        setGraphic(node);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        setGraphic(null);
+                    }
+                } else {
+                    setGraphic(null); // wait 상태 아닐 경우 버튼 숨김
+                }
+            }
+        });
     }
 }

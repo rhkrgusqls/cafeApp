@@ -1,19 +1,21 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.dto.StuffDTO;
-import com.example.demo1.properties.ConfigLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -83,6 +85,36 @@ public class StuffManagementController implements Initializable {
             return row;
         });
 
+        colMode.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || getIndex() >= getTableView().getItems().size()) {
+                    setGraphic(null);
+                    return;
+                }
+
+                StuffDTO dto = getTableView().getItems().get(getIndex());
+
+                if ("defective".equalsIgnoreCase(dto.getStatus())) {
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/modeBtnsDel.fxml"));
+                        AnchorPane pane = loader.load(); // 먼저 로드
+
+                        ModeBtnsDelController controller = loader.getController(); // 컨트롤러 인스턴스 가져오기
+                        controller.init(this); // cell 주입
+
+                        setGraphic(pane);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        setGraphic(null);
+                    }
+                } else {
+                    setGraphic(null);
+                }
+            }
+        });
     }
 
     private void openItemInfoPopup(int itemId) {
@@ -111,7 +143,7 @@ public class StuffManagementController implements Initializable {
 
         this.affiliationNum.setText(viewAffiliationCode);
 
-        if (ConfigLoader.getManagerCode().equals(loginCode) && !loginCode.equals(viewCode)) {
+        if (("101".equals(loginCode) && !loginCode.equals(viewCode)) || loginCode.equals("101")) { // 101일때 직접 물품추가하는 프론트가 필요
             logoutBtn.setVisible(false);
             requestBtn.setVisible(false);
             logoutBtn.setManaged(false);
@@ -124,10 +156,10 @@ public class StuffManagementController implements Initializable {
         loadStuffList();
     }
 
-    private void loadStuffList() {
+    public void loadStuffList() {
         new Thread(() -> {
             try {
-                URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/itemStock/list");
+                URL url = new URL("http://localhost:8080/itemStock/list");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json; utf-8");
@@ -163,6 +195,36 @@ public class StuffManagementController implements Initializable {
         }).start();
     }
 
+    public void loadAllStock() {
+        new Thread(() -> {
+            try {
+                URL url = new URL("http://localhost:8080/itemStock/listAll");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Accept", "application/json");
+
+                int responseCode = conn.getResponseCode();
+                if (responseCode == 200) {
+                    InputStream is = conn.getInputStream();
+                    ObjectMapper mapper = new ObjectMapper();
+                    StuffDTO[] items = mapper.readValue(is, StuffDTO[].class);
+
+                    Platform.runLater(() -> stuffTable.getItems().setAll(items));
+                } else {
+                    Platform.runLater(() ->
+                            stuffTable.setPlaceholder(new Label("서버 오류: " + responseCode))
+                    );
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Platform.runLater(() ->
+                        stuffTable.setPlaceholder(new Label("전체 조회 실패"))
+                );
+            }
+        }).start();
+    }
+
     private void openItemRequestPopup(String affiliationCode) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/requestForm.fxml"));
@@ -186,8 +248,6 @@ public class StuffManagementController implements Initializable {
     private void onRequestBtn() {
         openItemRequestPopup(loginAffiliationCode);  // 현재 로그인한 점포 코드 전달
     }
-
-
 
     @FXML
     private void onLogout() {
