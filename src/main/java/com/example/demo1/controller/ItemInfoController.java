@@ -1,5 +1,6 @@
 package com.example.demo1.controller;
 
+import com.example.demo1.controller.util.Cookie;
 import com.example.demo1.dto.ItemDTO;
 import com.example.demo1.properties.ConfigLoader;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -26,6 +27,7 @@ public class ItemInfoController {
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Accept", "application/json");
+                conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
 
                 InputStream is = conn.getInputStream();
                 ObjectMapper mapper = new ObjectMapper();

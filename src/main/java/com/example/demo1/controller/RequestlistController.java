@@ -1,5 +1,6 @@
 package com.example.demo1.controller;
 
+import com.example.demo1.controller.util.Cookie;
 import com.example.demo1.dto.OrderDTO;
 import com.example.demo1.properties.ConfigLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,6 +50,7 @@ public class RequestlistController implements Initializable {
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json; utf-8");
                 conn.setDoOutput(true);
+                conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
 
                 String json = String.format("{\"affiliationCode\":\"%s\"}", affiliationCode);
                 conn.getOutputStream().write(json.getBytes("utf-8"));

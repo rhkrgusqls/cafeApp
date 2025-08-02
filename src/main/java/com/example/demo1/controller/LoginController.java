@@ -1,5 +1,6 @@
 package com.example.demo1.controller;
 
+import com.example.demo1.controller.util.Cookie;
 import com.example.demo1.dto.LoginDTO;
 import com.example.demo1.properties.ConfigLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,6 +22,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+
 import org.json.JSONObject;
 
 
@@ -60,10 +62,12 @@ public class LoginController {
 
             HttpClient client = HttpClient.newHttpClient();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
+            
             if (response.statusCode() == 200) {
                 String body = response.body();
-
+                response.headers()
+                        .firstValue("Set-Cookie")
+                        .ifPresent(Cookie::setSessionCookie);
                 JSONObject json = new JSONObject(body);
                 boolean success = json.getBoolean("success");
                 String message = json.getString("message");

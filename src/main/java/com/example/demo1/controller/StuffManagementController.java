@@ -1,5 +1,6 @@
 package com.example.demo1.controller;
 
+import com.example.demo1.controller.util.Cookie;
 import com.example.demo1.dto.StuffDTO;
 import com.example.demo1.properties.ConfigLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,7 +8,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ResourceBundle;
 
 public class StuffManagementController implements Initializable {
@@ -166,7 +165,7 @@ public class StuffManagementController implements Initializable {
                 conn.setRequestProperty("Content-Type", "application/json; utf-8");
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setDoOutput(true);
-
+                conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
                 // JSON 바디 작성
                 String jsonBody = String.format("{\"affiliationCode\":\"%s\"}", viewAffiliationCode);
                 try (java.io.OutputStream os = conn.getOutputStream()) {
@@ -203,6 +202,7 @@ public class StuffManagementController implements Initializable {
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Accept", "application/json");
+                conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
 
                 int responseCode = conn.getResponseCode();
                 if (responseCode == 200) {

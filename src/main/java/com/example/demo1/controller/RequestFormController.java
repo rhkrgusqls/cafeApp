@@ -1,5 +1,6 @@
 package com.example.demo1.controller;
 
+import com.example.demo1.controller.util.Cookie;
 import com.example.demo1.dto.ItemRequestDTO;
 import com.example.demo1.properties.ConfigLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,6 +52,7 @@ public class RequestFormController {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json; utf-8");
             conn.setDoOutput(true);
+            conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
 
             try (OutputStream os = conn.getOutputStream()) {
                 os.write(jsonBody.getBytes());

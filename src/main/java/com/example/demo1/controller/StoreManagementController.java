@@ -1,6 +1,7 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.cell.ModeButtonCell;
+import com.example.demo1.controller.util.Cookie;
 import com.example.demo1.dto.AffiliationDTO;
 import com.example.demo1.dto.SignUpDTO;
 import com.example.demo1.dto.StoreDTO;
@@ -94,7 +95,7 @@ public class StoreManagementController implements Initializable {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
-
+            conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
             InputStream is = conn.getInputStream();
             ObjectMapper mapper = new ObjectMapper();
             AffiliationDTO response = mapper.readValue(is, AffiliationDTO.class);
@@ -128,6 +129,7 @@ public class StoreManagementController implements Initializable {
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setDoOutput(true);
+                conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
 
                 ObjectMapper mapper = new ObjectMapper();
                 try (OutputStream os = conn.getOutputStream()) {
@@ -260,7 +262,7 @@ public class StoreManagementController implements Initializable {
                 URL url = new URL(urlStr);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("DELETE");
-
+                conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
                 int responseCode = conn.getResponseCode();
                 if (responseCode == 200) {
                     InputStream is = conn.getInputStream();

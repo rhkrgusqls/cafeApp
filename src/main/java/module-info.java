@@ -23,4 +23,6 @@ module com.example.demo1 {
 
     exports com.example.demo1;
     exports com.example.demo1.controller;
+    exports com.example.demo1.controller.util;
+    opens com.example.demo1.controller.util to javafx.fxml;
 }

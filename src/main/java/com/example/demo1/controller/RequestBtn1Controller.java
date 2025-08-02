@@ -1,5 +1,6 @@
 package com.example.demo1.controller;
 
+import com.example.demo1.controller.util.Cookie;
 import com.example.demo1.dto.OrderDTO;
 import com.example.demo1.properties.ConfigLoader;
 import javafx.application.Platform;
@@ -36,6 +37,7 @@ public class RequestBtn1Controller {
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setDoOutput(true);
+                conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
 
                 String json = String.format("{\"affiliationCode\":\"%s\"}",101); // 어차피 이 페이지는 관리자밖에 못봄
 
