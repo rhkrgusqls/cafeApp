@@ -1,6 +1,7 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.dto.OrderDTO;
+import com.example.demo1.properties.ConfigLoader;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -17,7 +18,7 @@ public class RequestBtn1Controller {
 
     private TableView<OrderDTO> tableView;
 
-    private static final String BASE_URL = "http://localhost:8080/ordering";
+    private static final String BASE_URL = "http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/ordering";
 
     public void setOrder(OrderDTO order, TableView<OrderDTO> tableView) {
         this.tableView = tableView;
