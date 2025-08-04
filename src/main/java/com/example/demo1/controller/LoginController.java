@@ -18,10 +18,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.event.*;
 
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpTimeoutException;
 
 import org.json.JSONObject;
 
@@ -109,9 +111,13 @@ public class LoginController {
                 showAlert("오류", "서버 오류 발생: " + response.statusCode());
             }
 
+        } catch (ConnectException ce) {
+            showAlert("서버 연결 실패", "서버가 실행되고 있지 않거나 연결할 수 없습니다.");
+        } catch (HttpTimeoutException te) {
+            showAlert("시간 초과", "서버 응답 시간이 초과되었습니다.");
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert("예외 발생", e.getMessage());
+            showAlert("예외 발생", "알 수 없는 오류: " + e.getMessage());
         }
     }
     @FXML
