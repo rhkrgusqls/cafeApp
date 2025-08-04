@@ -72,7 +72,11 @@ public class RegisterController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert("예외 발생", e.getMessage());
+            String msg = e.getMessage();
+            if (msg == null || msg.trim().isEmpty()) {
+                msg = "알 수 없는 오류가 발생했습니다.";
+            }
+            showAlert("예외 발생", msg);
         }
     }
 
