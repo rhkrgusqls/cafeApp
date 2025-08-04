@@ -1,38 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="299.0" prefWidth="312.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.controller.ItemInfoController">
+
+<AnchorPane prefHeight="461.0" prefWidth="466.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.controller.ItemlistController">
    <children>
-      <Circle fill="#ffe52194" layoutX="71.0" layoutY="71.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
-      <Circle fill="#fbff2194" layoutX="118.0" layoutY="-2.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
-      <Circle fill="#ffe12197" layoutX="-9.0" layoutY="111.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
-      <Text layoutX="29.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Item Info" textAlignment="CENTER" wrappingWidth="254.109375">
+      <Circle fill="#ffe52194" layoutX="68.0" layoutY="76.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
+      <Circle fill="#fbff2194" layoutX="115.0" layoutY="3.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
+      <Circle fill="#ffe12197" layoutX="-12.0" layoutY="116.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
+      <Text layoutX="8.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Item List">
          <font>
             <Font name="Freestyle Script" size="52.0" />
          </font>
       </Text>
-      <TextField fx:id="itemIdField" editable="false" layoutX="136.0" layoutY="98.0" />
-      <Text layoutX="24.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Item_ID">
-         <font>
-            <Font name="Comic Sans MS" size="20.0" />
-         </font>
-      </Text>
-      <TextField fx:id="nameField" editable="false" layoutX="136.0" layoutY="179.0" />
-      <TextField fx:id="categoryField" editable="false" layoutX="136.0" layoutY="262.0" />
-      <Text layoutX="24.0" layoutY="198.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name">
-         <font>
-            <Font name="Comic Sans MS" size="20.0" />
-         </font>
-      </Text>
-      <Text layoutX="24.0" layoutY="281.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category">
-         <font>
-            <Font name="Comic Sans MS" size="20.0" />
-         </font>
-      </Text>
+      <TableView fx:id="tableView" layoutX="25.0" layoutY="76.0" prefHeight="344.0" prefWidth="416.0">
+        <columns>
+            <TableColumn fx:id="colItemID" prefWidth="47.0" resizable="false" text="ItemID" />
+            <TableColumn fx:id="colName" prefWidth="181.0" resizable="false" text="Name" />
+            <TableColumn fx:id="colCategory" prefWidth="94.0" resizable="false" text="Category" />
+            <TableColumn fx:id="colState" prefWidth="93.0" resizable="false" text="State" />
+        </columns>
+      </TableView>
    </children>
 </AnchorPane>
