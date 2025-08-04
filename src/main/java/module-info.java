@@ -15,6 +15,7 @@ module com.example.demo1 {
     requires com.fasterxml.jackson.databind;
     requires spring.context;
     requires spring.boot;
+    requires java.desktop;
 
     opens com.example.demo1 to javafx.fxml;
     opens com.example.demo1.controller to javafx.fxml;
