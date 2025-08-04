@@ -43,5 +43,6 @@
          </font>
       </Text>
       <Button fx:id="requestBtn" layoutX="704.0" layoutY="19.0" mnemonicParsing="false" onAction="#onRequestBtn" text="재고 요청" />
+      <Button fx:id="historyBtn" layoutX="627.0" layoutY="19.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="68.0"  onAction="#onHistoryBtn" text="재고 기록" />
    </children>
 </AnchorPane>

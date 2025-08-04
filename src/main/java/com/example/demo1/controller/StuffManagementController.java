@@ -16,6 +16,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -39,6 +40,7 @@ public class StuffManagementController implements Initializable {
 
     @FXML private Button logoutBtn;
     @FXML private Button requestBtn;
+    @FXML private Button historyBtn;
     @FXML private Text affiliationNum;
 
     private String loginAffiliationCode;    // 로그인한 사용자
@@ -146,10 +148,12 @@ public class StuffManagementController implements Initializable {
         if ((ConfigLoader.getManagerCode().equals(loginCode) && !loginCode.equals(viewCode)) || loginCode.equals(ConfigLoader.getManagerCode())) { // 101일때 직접 물품추가하는 프론트가 필요
             logoutBtn.setVisible(false);
             requestBtn.setVisible(false);
+            historyBtn.setVisible(false);
             logoutBtn.setManaged(false);
         } else {
             logoutBtn.setVisible(true);
             requestBtn.setVisible(true);
+            historyBtn.setVisible(true);
             logoutBtn.setManaged(true);
         }
 
@@ -237,6 +241,26 @@ public class StuffManagementController implements Initializable {
             Stage stage = new Stage();
             stage.setTitle("재고 요청");
             stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void onHistoryBtn() {
+        try {
+            // `affiliationCode`를 전달하여 재고 기록 화면을 연다
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/affiliationLog.fxml"));
+            Parent history = loader.load();
+            AffiliationLogController controller = loader.getController();
+            controller.setAffiliationContext(loginAffiliationCode); // 로그인한 사용자 점포 코드 전달
+
+            Stage stage = new Stage();
+            stage.setTitle("재고 기록");
+            stage.setScene(new Scene(history));
             stage.setResizable(false);
             stage.centerOnScreen();
             stage.show();
