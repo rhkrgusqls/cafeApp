@@ -8,9 +8,9 @@ public class HistoryDTO {
     private int orderId;       // 주문 ID
     private int itemId;        // 아이템 ID
     private int quantity;      // 수량
-    private String status;     // 상태 (예: 정상, 불량)
-    private String date;       // 날짜
-    private String affiliationCode;
+    private String state;     // 상태 (예: 정상, 불량)
+    private String orderDate;       // 날짜
+    //private String affiliationCode;
 
 
     // Getters and Setters
@@ -38,27 +38,27 @@ public class HistoryDTO {
         this.quantity = quantity;
     }
 
-    public String getStatus() {
-        return status;
+    public String getState() {
+        return state;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setState(String state) {
+        this.state = state;
     }
 
-    public String getDate() {
-        return date;
+    public String getOrderDate() {
+        return orderDate;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setOrderDate(String orderDate) {
+        this.orderDate = orderDate;
     }
 
-    public String getAffiliationCode() {
-        return affiliationCode;
-    }
-
-    public void setAffiliationCode(String affiliationCode) {
-        this.affiliationCode = affiliationCode;
-    }
+//    public String getAffiliationCode() {
+//        return affiliationCode;
+//    }
+//
+//    public void setAffiliationCode(String affiliationCode) {
+//        this.affiliationCode = affiliationCode;
+//    }
 }
