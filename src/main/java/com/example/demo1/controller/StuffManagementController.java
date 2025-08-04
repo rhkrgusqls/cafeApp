@@ -1,12 +1,13 @@
 package com.example.demo1.controller;
 
+import com.example.demo1.controller.util.Cookie;
 import com.example.demo1.dto.StuffDTO;
+import com.example.demo1.properties.ConfigLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -19,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ResourceBundle;
 
 public class StuffManagementController implements Initializable {
@@ -143,7 +143,7 @@ public class StuffManagementController implements Initializable {
 
         this.affiliationNum.setText(viewAffiliationCode);
 
-        if (("101".equals(loginCode) && !loginCode.equals(viewCode)) || loginCode.equals("101")) { // 101일때 직접 물품추가하는 프론트가 필요
+        if ((ConfigLoader.getManagerCode().equals(loginCode) && !loginCode.equals(viewCode)) || loginCode.equals(ConfigLoader.getManagerCode())) { // 101일때 직접 물품추가하는 프론트가 필요
             logoutBtn.setVisible(false);
             requestBtn.setVisible(false);
             logoutBtn.setManaged(false);
@@ -159,13 +159,13 @@ public class StuffManagementController implements Initializable {
     public void loadStuffList() {
         new Thread(() -> {
             try {
-                URL url = new URL("http://localhost:8080/itemStock/list");
+                URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/itemStock/list");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json; utf-8");
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setDoOutput(true);
-
+                conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
                 // JSON 바디 작성
                 String jsonBody = String.format("{\"affiliationCode\":\"%s\"}", viewAffiliationCode);
                 try (java.io.OutputStream os = conn.getOutputStream()) {
@@ -198,10 +198,11 @@ public class StuffManagementController implements Initializable {
     public void loadAllStock() {
         new Thread(() -> {
             try {
-                URL url = new URL("http://localhost:8080/itemStock/listAll");
+                URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/itemStock/listAll");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Accept", "application/json");
+                conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
 
                 int responseCode = conn.getResponseCode();
                 if (responseCode == 200) {

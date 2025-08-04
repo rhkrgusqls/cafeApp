@@ -1,6 +1,8 @@
 package com.example.demo1.controller;
 
+import com.example.demo1.controller.util.Cookie;
 import com.example.demo1.dto.OrderDTO;
+import com.example.demo1.properties.ConfigLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -43,11 +45,12 @@ public class RequestlistController implements Initializable {
     private void loadOrders() {
         new Thread(() -> {
             try {
-                URL url = new URL("http://localhost:8080/ordering/display");
+                URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/ordering/display");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json; utf-8");
                 conn.setDoOutput(true);
+                conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
 
                 String json = String.format("{\"affiliationCode\":\"%s\"}", affiliationCode);
                 conn.getOutputStream().write(json.getBytes("utf-8"));

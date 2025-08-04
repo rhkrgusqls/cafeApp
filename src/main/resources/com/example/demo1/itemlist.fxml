@@ -13,7 +13,7 @@
       <Circle fill="#ffe12197" layoutX="-9.0" layoutY="111.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
       <Text layoutX="29.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Item Info" textAlignment="CENTER" wrappingWidth="254.109375">
          <font>
-            <Font name="Britannic Bold" size="52.0" />
+            <Font name="Freestyle Script" size="52.0" />
          </font>
       </Text>
       <TextField fx:id="itemIdField" editable="false" layoutX="136.0" layoutY="98.0" />

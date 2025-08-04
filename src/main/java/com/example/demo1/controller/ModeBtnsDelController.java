@@ -1,6 +1,7 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.dto.StuffDTO;
+import com.example.demo1.properties.ConfigLoader;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
@@ -27,7 +28,7 @@ public class ModeBtnsDelController {
             if (cell == null) return;  // 안전체크
             StuffDTO stuff = (StuffDTO) cell.getTableView().getItems().get(cell.getIndex());
 
-            String url = "http://localhost:8080/itemStock/delete?stockId=" + stuff.getStockId();
+            String url = "http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/itemStock/delete?stockId=" + stuff.getStockId();
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
                     .GET()
