@@ -16,7 +16,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -81,11 +80,16 @@ public class StuffManagementController implements Initializable {
             row.setOnMouseClicked(event -> {
                 if (!row.isEmpty() && event.getClickCount() == 2) {
                     StuffDTO clickedRow = row.getItem();
-                    openItemInfoPopup(clickedRow.getItemId());
+
+                    // 101(본점)이 아닐 때만 itemlist.fxml 팝업 띄우기
+                    if (!"101".equals(loginAffiliationCode)) {
+                        openItemInfoPopup(clickedRow.getItemId());
+                    }
                 }
             });
             return row;
         });
+
 
         colMode.setCellFactory(column -> new TableCell<>() {
             @Override
@@ -121,7 +125,7 @@ public class StuffManagementController implements Initializable {
 
     private void openItemInfoPopup(int itemId) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/itemlist.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/iteminfo.fxml"));
             Parent root = loader.load();
 
             // Controller 연결 및 데이터 전달
@@ -203,10 +207,15 @@ public class StuffManagementController implements Initializable {
         new Thread(() -> {
             try {
                 URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/itemStock/listAll");
+
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
+
+                logoutBtn.setVisible(false);
+                requestBtn.setVisible(false);
+                historyBtn.setVisible(false);
 
                 int responseCode = conn.getResponseCode();
                 if (responseCode == 200) {
@@ -230,6 +239,7 @@ public class StuffManagementController implements Initializable {
         }).start();
     }
 
+    // 아이템 리스트에서 아이템 아이디 받아와서, 여기 아이템id칸에 고정시킬 예정
     private void openItemRequestPopup(String affiliationCode) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/requestForm.fxml"));
@@ -248,6 +258,26 @@ public class StuffManagementController implements Initializable {
             e.printStackTrace();
         }
     }
+
+//    private void openItemListPopup(int itemId) {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/itemlist.fxml"));
+//            Parent root = loader.load();
+//
+//            // controller 넘겨줄 필요가 있다면 이곳에서 setItemId(itemId) 가능
+//            // ItemlistController controller = loader.getController();
+//            // controller.setItemId(itemId); // 예시
+//
+//            Stage stage = new Stage();
+//            stage.setTitle("아이템 목록");
+//            stage.setScene(new Scene(root));
+//            stage.setResizable(false);
+//            stage.centerOnScreen();
+//            stage.show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @FXML
     private void onHistoryBtn() {
@@ -271,7 +301,23 @@ public class StuffManagementController implements Initializable {
 
     @FXML
     private void onRequestBtn() {
-        openItemRequestPopup(loginAffiliationCode);  // 현재 로그인한 점포 코드 전달
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/itemlist.fxml"));
+            Parent root = loader.load();
+
+            // controller 넘겨줄 필요가 있다면 이곳에서 setItemId(itemId) 가능
+            // ItemlistController controller = loader.getController();
+            // controller.setItemId(itemId); // 예시
+
+            Stage stage = new Stage();
+            stage.setTitle("아이템 목록");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }  // 현재 로그인한 점포 코드 전달
     }
 
     @FXML
