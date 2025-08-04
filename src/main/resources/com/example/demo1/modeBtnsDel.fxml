@@ -4,8 +4,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 
-<AnchorPane prefHeight="28.0" prefWidth="110.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="28.0" prefWidth="110.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.controller.ModeBtnsDelController">
    <children>
-      <Button layoutY="3.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="110.0" text="폐기" />
+      <Button fx:id="disposeBtn" layoutY="3.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="110.0" text="폐기" />
    </children>
 </AnchorPane>
