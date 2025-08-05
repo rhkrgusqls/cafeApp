@@ -39,6 +39,7 @@ public class StoreManagementController implements Initializable {
     @FXML private TextField passwordField;
     @FXML private TextField storeNameField;
 
+    @FXML private Button priStockBtn;
     @FXML private Button itemsBtn;
 
     private String loginAffiliationCode;
@@ -94,6 +95,25 @@ public class StoreManagementController implements Initializable {
             }
         });
 
+        priStockBtn.setOnAction(e -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/itemlist.fxml"));
+                Parent root = loader.load();
+
+                ItemlistController controller = loader.getController();
+                controller.setLoginAffiliationCode("999"); // 본점이지만 상태 변경 불가하게, 101로 두면 망해요
+                controller.enablePriStockMode(); // 전용 요청 모드 활성화
+
+                Stage stage = new Stage();
+                stage.setTitle("아이템 목록");
+                stage.setScene(new Scene(root));
+                stage.setResizable(false);
+                stage.centerOnScreen();
+                stage.show();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
 
         loadStoreList(); // 초기 테이블 데이터 불러오기
     }

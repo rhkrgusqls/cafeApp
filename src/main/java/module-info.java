@@ -17,6 +17,7 @@ module com.example.demo1 {
     requires spring.boot;
     requires java.desktop;
     requires spring.core;
+    requires java.sql;
 
     opens com.example.demo1 to javafx.fxml;
     opens com.example.demo1.controller to javafx.fxml;
