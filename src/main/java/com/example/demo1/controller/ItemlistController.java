@@ -38,12 +38,17 @@ public class ItemlistController implements Initializable {
 
     //private boolean requestMode = false; // 기본은 요청 모드 아님
     private String loginAffiliationCode;
+    private boolean priStockMode = false;
 
     public void setLoginAffiliationCode(String loginAffiliationCode) {
     //    this.requestMode = true; // 요청 모드 켜기
         this.loginAffiliationCode = loginAffiliationCode;
         addBtn.setVisible("101".equals(loginAffiliationCode));
         infoText.setVisible("101".equals(loginAffiliationCode));
+    }
+
+    public void enablePriStockMode() {
+        this.priStockMode = true;
     }
 
     @Override
@@ -59,14 +64,8 @@ public class ItemlistController implements Initializable {
                 if (event.getClickCount() == 2 && !row.isEmpty()) {
                     ItemDTO selectedItem = row.getItem();
 
-                    if ("101".equals(loginAffiliationCode)) {
-                        // 본사 → 상태 변경
-                        String nextState =
-                                "available".equalsIgnoreCase(selectedItem.getState()) ? "unavailable" : "available";
-
-                        showConfirmAndChangeState(selectedItem.getItemId(), nextState);
-                    } else {
-                        // 분점 → 물자 요청
+                    if (priStockMode) {
+                        // 본점 전용 요청 모드 → unavailable이면 차단
                         if ("unavailable".equalsIgnoreCase(selectedItem.getState())) {
                             Alert alert = new Alert(Alert.AlertType.WARNING);
                             alert.setTitle("요청 불가");
@@ -75,7 +74,25 @@ public class ItemlistController implements Initializable {
                             alert.showAndWait();
                             return; // 요청창 안 띄움
                         }
+                        openPriStockRequest(selectedItem.getItemId());
+                        return;
+                    }
 
+                    if ("101".equals(loginAffiliationCode)) {
+                        // 본점 일반 모드 → 상태 변경
+                        String nextState =
+                                "available".equalsIgnoreCase(selectedItem.getState()) ? "unavailable" : "available";
+                        showConfirmAndChangeState(selectedItem.getItemId(), nextState);
+                    } else {
+                        // 분점 모드
+                        if ("unavailable".equalsIgnoreCase(selectedItem.getState())) {
+                            Alert alert = new Alert(Alert.AlertType.WARNING);
+                            alert.setTitle("요청 불가");
+                            alert.setHeaderText(null);
+                            alert.setContentText("요청할 수 없는 재고입니다.");
+                            alert.showAndWait();
+                            return;
+                        }
                         openRequestFormWithItemId(selectedItem.getItemId());
                     }
                 }
@@ -161,6 +178,25 @@ public class ItemlistController implements Initializable {
 
             Stage stage = new Stage();
             stage.setTitle("재고 요청");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void openPriStockRequest(int itemId) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/pristockrequest.fxml"));
+            Parent root = loader.load();
+
+            PriStockRequestController controller = loader.getController();
+            controller.setItemId(itemId);
+
+            Stage stage = new Stage();
+            stage.setTitle("본점 전용 물품 요청");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
             stage.centerOnScreen();
