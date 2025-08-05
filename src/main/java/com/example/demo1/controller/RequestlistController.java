@@ -90,7 +90,8 @@ public class RequestlistController implements Initializable {
 
                 OrderDTO order = table.getItems().get(getIndex());
 
-                if ("wait".equalsIgnoreCase(order.getState())) {
+                if ("wait".equalsIgnoreCase(order.getState())||
+                        "re-review-needed".equalsIgnoreCase(order.getState())) {
                     try {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/requestBtn1.fxml"));
                         Node node = loader.load();
