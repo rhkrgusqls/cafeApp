@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -19,21 +20,21 @@ public class RequestFormController {
     @FXML private TextField QuantityField;
     @FXML private Button submitBtn;
 
-    private String affiliationCode; // 외부에서 주입
+    private String loginAffiliationCode; // 외부에서 주입
 
-//    public void setRequestContext(int itemId, int quantity, String affiliationCode) {
-//        itemIdField.setText(String.valueOf(itemId));
-//        QuantityField.setText(String.valueOf(quantity));
-//        this.affiliationCode = affiliationCode;
-//    }
+    public void setItemId(int itemId) {
+        itemIdField.setText(String.valueOf(itemId));
+        itemIdField.setEditable(false); // 고정
+    }
 
     @FXML
     public void initialize() {
         submitBtn.setOnAction(e -> sendRequest());
     }
 
-    public void setAffiliationContext(String affiliationCode) {
-        this.affiliationCode = affiliationCode;
+    public void setLoginAffiliationCode(String loginAffiliationCode) {
+        this.loginAffiliationCode = loginAffiliationCode;
+        System.out.println("loginAffiliationCode: " + loginAffiliationCode);
     }
 
     private void sendRequest() {
@@ -42,7 +43,7 @@ public class RequestFormController {
             int quantity = Integer.parseInt(QuantityField.getText());
 
             ItemRequestDTO requestPayload = new ItemRequestDTO();
-            requestPayload.setAffiliationCode(affiliationCode); // dto 필드 설정
+            requestPayload.setAffiliationCode(loginAffiliationCode); // dto 필드 설정
 
             ObjectMapper mapper = new ObjectMapper();
             String jsonBody = mapper.writeValueAsString(requestPayload);
@@ -61,6 +62,7 @@ public class RequestFormController {
             int responseCode = conn.getResponseCode();
             if (responseCode == 200) {
                 showAlert("요청 완료", "재고 요청이 성공적으로 처리되었습니다.");
+                closeWindow();
             } else {
                 showAlert("요청 실패", "서버 응답 코드: " + responseCode);
             }
@@ -71,11 +73,18 @@ public class RequestFormController {
         }
     }
 
+    //알림창
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    // 창 닫기
+    private void closeWindow() {
+        Stage stage = (Stage) submitBtn.getScene().getWindow();
+        stage.close();
     }
 }
