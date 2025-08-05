@@ -12,14 +12,18 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class StuffManagementController implements Initializable {
@@ -291,12 +295,28 @@ public class StuffManagementController implements Initializable {
     @FXML
     private void onLogout() {
         try {
-            Parent login = FXMLLoader.load(getClass().getResource("/com/example/demo1/login.fxml"));
-            Stage stage = (Stage) logoutBtn.getScene().getWindow();
-            stage.setScene(new Scene(login));
-            stage.setResizable(false);
-            stage.centerOnScreen();
-            stage.show();
+            // 현재 열려 있는 모든 창 닫기
+            List<Window> windows = new ArrayList<>(Window.getWindows());
+            for (Window window : windows) {
+                if (window instanceof Stage) {
+                    ((Stage) window).close();
+                }
+            }
+
+            // 새 로그인 Stage 생성
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/login.fxml"));
+            Parent root = loader.load();
+
+            Stage loginStage = new Stage();
+            loginStage.setScene(new Scene(root));
+
+            // CafeApplication과 동일하게 설정
+            loginStage.getIcons().add(new Image(getClass().getResourceAsStream("/coffee.png")));
+            loginStage.setTitle("Cafe Stuff Management System");
+            loginStage.setResizable(false);
+            loginStage.centerOnScreen();
+
+            loginStage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
