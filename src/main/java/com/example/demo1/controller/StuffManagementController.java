@@ -293,6 +293,12 @@ public class StuffManagementController implements Initializable {
             stage.setScene(new Scene(history));
             stage.setResizable(false);
             stage.centerOnScreen();
+            stage.setOnHidden(e -> {
+                // loginAffiliationCode가 101이 아닌 경우에만 새로고침
+                if (!"101".equals(loginAffiliationCode)) {
+                    loadStuffList();
+                }
+            });
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
