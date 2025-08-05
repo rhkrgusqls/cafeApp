@@ -67,6 +67,15 @@ public class ItemlistController implements Initializable {
                         showConfirmAndChangeState(selectedItem.getItemId(), nextState);
                     } else {
                         // 분점 → 물자 요청
+                        if ("unavailable".equalsIgnoreCase(selectedItem.getState())) {
+                            Alert alert = new Alert(Alert.AlertType.WARNING);
+                            alert.setTitle("요청 불가");
+                            alert.setHeaderText(null);
+                            alert.setContentText("요청할 수 없는 재고입니다.");
+                            alert.showAndWait();
+                            return; // 요청창 안 띄움
+                        }
+
                         openRequestFormWithItemId(selectedItem.getItemId());
                     }
                 }

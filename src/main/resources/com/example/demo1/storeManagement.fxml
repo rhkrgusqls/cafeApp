@@ -53,7 +53,8 @@
          </children>
       </AnchorPane>
 
-      <Button layoutX="790.0" layoutY="14.0" mnemonicParsing="false" onAction="#onLogout" text="Logout" />
-      <Button fx:id="itemsBtn" layoutX="727.0" layoutY="14.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="53.0" text="Items" />
+      <Button layoutX="779.0" layoutY="14.0" mnemonicParsing="false" onAction="#onLogout" text="로그아웃" />
+      <Button fx:id="itemsBtn" layoutX="708.0" layoutY="14.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="65.0" text="물품메뉴" />
+      <Button fx:id="priStockBtn" layoutX="636.0" layoutY="14.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="65.0" text="본점재고" />
    </children>
 </AnchorPane>
