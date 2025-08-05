@@ -39,6 +39,8 @@ public class StoreManagementController implements Initializable {
     @FXML private TextField passwordField;
     @FXML private TextField storeNameField;
 
+    @FXML private Button itemsBtn;
+
     private String loginAffiliationCode;
 
     private StuffManagementController stuffManagementController;
@@ -71,6 +73,28 @@ public class StoreManagementController implements Initializable {
             return row;
         });
 
+        itemsBtn.setOnAction(e -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/itemlist.fxml"));
+                Parent root = loader.load();
+
+                // 컨트롤러 가져오기
+                ItemlistController controller = loader.getController();
+                // 로그인한 코드 전달 (본사면 "101" 전달)
+                controller.setLoginAffiliationCode(loginAffiliationCode);
+
+                Stage stage = new Stage();
+                stage.setTitle("아이템 목록");
+                stage.setScene(new Scene(root));
+                stage.setResizable(false);
+                stage.centerOnScreen();
+                stage.show();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+
         loadStoreList(); // 초기 테이블 데이터 불러오기
     }
 
@@ -89,6 +113,21 @@ public class StoreManagementController implements Initializable {
         }).start();
     }
 
+    private void openItemList() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/itemlist.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("아이템 목록");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
     private List<StoreDTO> fetchStoresFromApi() {
         try {
             URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/affiliation/list");

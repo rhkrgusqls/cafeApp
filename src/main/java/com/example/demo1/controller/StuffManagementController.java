@@ -90,7 +90,6 @@ public class StuffManagementController implements Initializable {
             return row;
         });
 
-
         colMode.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -239,46 +238,6 @@ public class StuffManagementController implements Initializable {
         }).start();
     }
 
-    // 아이템 리스트에서 아이템 아이디 받아와서, 여기 아이템id칸에 고정시킬 예정
-    private void openItemRequestPopup(String affiliationCode) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/requestForm.fxml"));
-            Parent root = loader.load();
-
-            RequestFormController controller = loader.getController();
-            controller.setLoginAffiliationCode(affiliationCode); // 이제는 itemId, quantity는 입력 받음
-
-            Stage stage = new Stage();
-            stage.setTitle("재고 요청");
-            stage.setScene(new Scene(root));
-            stage.setResizable(false);
-            stage.centerOnScreen();
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-//    private void openItemListPopup(int itemId) {
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/itemlist.fxml"));
-//            Parent root = loader.load();
-//
-//            // controller 넘겨줄 필요가 있다면 이곳에서 setItemId(itemId) 가능
-//            // ItemlistController controller = loader.getController();
-//            // controller.setItemId(itemId); // 예시
-//
-//            Stage stage = new Stage();
-//            stage.setTitle("아이템 목록");
-//            stage.setScene(new Scene(root));
-//            stage.setResizable(false);
-//            stage.centerOnScreen();
-//            stage.show();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     @FXML
     private void onHistoryBtn() {
         try {
@@ -312,7 +271,7 @@ public class StuffManagementController implements Initializable {
             Parent root = loader.load();
 
             ItemlistController controller = loader.getController();
-            controller.setLoginAffiliationCode(loginAffiliationCode);
+            controller.setLoginAffiliationCode(loginAffiliationCode);//로그인할때 분점코드를 넣어야 요청가능
 
             // controller 넘겨줄 필요가 있다면 이곳에서 setItemId(itemId) 가능
             // ItemlistController controller = loader.getController();
@@ -343,4 +302,43 @@ public class StuffManagementController implements Initializable {
         }
     }
 
+// 아이템 리스트에서 아이템 아이디 받아와서, 여기 아이템id칸에 고정시킬 예정
+//    private void openItemRequestPopup(String affiliationCode) {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/requestForm.fxml"));
+//            Parent root = loader.load();
+//
+//            RequestFormController controller = loader.getController();
+//            controller.setLoginAffiliationCode(affiliationCode); // 이제는 itemId, quantity는 입력 받음
+//
+//            Stage stage = new Stage();
+//            stage.setTitle("재고 요청");
+//            stage.setScene(new Scene(root));
+//            stage.setResizable(false);
+//            stage.centerOnScreen();
+//            stage.show();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+//    private void openItemListPopup(int itemId) {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/itemlist.fxml"));
+//            Parent root = loader.load();
+//
+//            // controller 넘겨줄 필요가 있다면 이곳에서 setItemId(itemId) 가능
+//            // ItemlistController controller = loader.getController();
+//            // controller.setItemId(itemId); // 예시
+//
+//            Stage stage = new Stage();
+//            stage.setTitle("아이템 목록");
+//            stage.setScene(new Scene(root));
+//            stage.setResizable(false);
+//            stage.centerOnScreen();
+//            stage.show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
