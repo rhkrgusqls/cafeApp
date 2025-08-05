@@ -8,12 +8,15 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Label;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -27,8 +30,9 @@ public class AffiliationLogController {
     @FXML private TableColumn<HistoryDTO, Integer> quantityColumn;
     @FXML private TableColumn<HistoryDTO, String> stateColumn;
     @FXML private TableColumn<HistoryDTO, String> orderDateColumn;
+    @FXML private TableColumn<HistoryDTO, String> mode;
 
-    private String affiliationCode;
+    private String loginAffiliationCode;
 
     // FXML 로드 후 자동 실행되는 초기화 메서드
     @FXML
@@ -38,12 +42,47 @@ public class AffiliationLogController {
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         stateColumn.setCellValueFactory(new PropertyValueFactory<>("state")); // DTO의 필드명
         orderDateColumn.setCellValueFactory(new PropertyValueFactory<>("orderDate")); // DTO의 필드명
+
+        mode.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || getIndex() >= getTableView().getItems().size()) {
+                    setGraphic(null);
+                    return;
+                }
+
+                HistoryDTO dto = getTableView().getItems().get(getIndex());
+
+                if ("processed".equalsIgnoreCase(dto.getState()) && !"101".equals(loginAffiliationCode)) {
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/modeBtnsRC.fxml"));
+                        AnchorPane pane = loader.load();
+                        ModeBtnsRCController btnController = loader.getController();
+
+                        // 콜백: 현재 테이블 데이터 다시 불러오기
+                        Runnable refreshCallback = () -> loadStockHistory();
+
+                        btnController.init(dto.getOrderId(), loginAffiliationCode, refreshCallback);
+
+                        setGraphic(pane);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        setGraphic(null);
+                    }
+                } else {
+                    setGraphic(null);
+                }
+            }
+        });
     }
 
     public void setAffiliationContext(String affiliationCode) {
-        this.affiliationCode = affiliationCode;
+        this.loginAffiliationCode = affiliationCode;
         loadStockHistory();
     }
+
 
     private void loadStockHistory() {
         new Thread(() -> {
@@ -56,7 +95,7 @@ public class AffiliationLogController {
                 conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
                 conn.setDoOutput(true);
 
-                String jsonBody = String.format("{\"affiliationCode\":\"%s\"}", affiliationCode);
+                String jsonBody = String.format("{\"affiliationCode\":\"%s\"}", loginAffiliationCode);
                 try (OutputStream os = conn.getOutputStream()) {
                     byte[] input = jsonBody.getBytes("utf-8");
                     os.write(input, 0, input.length);

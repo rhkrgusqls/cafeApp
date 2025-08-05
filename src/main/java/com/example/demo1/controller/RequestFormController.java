@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -61,6 +62,7 @@ public class RequestFormController {
             int responseCode = conn.getResponseCode();
             if (responseCode == 200) {
                 showAlert("요청 완료", "재고 요청이 성공적으로 처리되었습니다.");
+                closeWindow();
             } else {
                 showAlert("요청 실패", "서버 응답 코드: " + responseCode);
             }
@@ -71,11 +73,18 @@ public class RequestFormController {
         }
     }
 
+    //알림창
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    // 창 닫기
+    private void closeWindow() {
+        Stage stage = (Stage) submitBtn.getScene().getWindow();
+        stage.close();
     }
 }

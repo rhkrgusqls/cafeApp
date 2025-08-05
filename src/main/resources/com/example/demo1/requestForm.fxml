@@ -14,7 +14,7 @@
       <Circle fill="#ffe12197" layoutX="-18.0" layoutY="100.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
       <Text layoutX="40.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Item Request" textAlignment="CENTER" wrappingWidth="315.109375">
          <font>
-            <Font name="Britannic Bold" size="52.0" />
+            <Font name="Freestyle Script" size="52.0" />
          </font>
       </Text>
       <Text layoutX="45.0" layoutY="153.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Item_ID">

@@ -1,8 +1,7 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.dto.ItemDTO;
-import com.example.demo1.dto.OrderDTO;
-import com.example.demo1.dto.StoreDTO;
+
 import com.example.demo1.properties.ConfigLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
@@ -20,15 +19,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.http.HttpHeaders;
-import java.nio.charset.StandardCharsets;
+
 import java.util.ResourceBundle;
 
-import java.net.URLConnection;
 
 public class ItemlistController implements Initializable {
 
@@ -63,6 +59,7 @@ public class ItemlistController implements Initializable {
         loadItemList();
     }
 
+    //아이템 리스트에서 항목을 더블클릭하면 해당 물품을 요청하는 페이지 생성
     private void openRequestFormWithItemId(int itemId) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/requestForm.fxml"));
@@ -82,7 +79,6 @@ public class ItemlistController implements Initializable {
             e.printStackTrace();
         }
     }
-
 
     private void loadItemList() {
         new Thread(() -> {
@@ -116,23 +112,23 @@ public class ItemlistController implements Initializable {
         }).start();
     }
 
-    public void openItemRequestList(OrderDTO itemId, OrderDTO quantity, OrderDTO affiliation) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/itemlist.fxml"));
-            Parent root = loader.load();
-
-            ItemlistController controller = loader.getController();
-            controller.setLoginAffiliationCode(loginAffiliationCode); // 꼭 넣어줘야 함
-
-            Stage stage = new Stage();
-            stage.setTitle("상품 리스트");
-            stage.setScene(new Scene(root));
-            stage.setResizable(false);
-            stage.centerOnScreen();
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void openItemRequestList(OrderDTO itemId, OrderDTO quantity, OrderDTO affiliation) {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/itemlist.fxml"));
+//            Parent root = loader.load();
+//
+//            ItemlistController controller = loader.getController();
+//            controller.setLoginAffiliationCode(loginAffiliationCode);
+//
+//            Stage stage = new Stage();
+//            stage.setTitle("상품 리스트");
+//            stage.setScene(new Scene(root));
+//            stage.setResizable(false);
+//            stage.centerOnScreen();
+//            stage.show();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
