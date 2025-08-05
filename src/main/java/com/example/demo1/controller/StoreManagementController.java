@@ -17,13 +17,16 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -219,17 +222,29 @@ public class StoreManagementController implements Initializable {
 
     @FXML
     private void onLogout(ActionEvent event) {
-        URL fxmlUrl = getClass().getResource("/com/example/demo1/login.fxml");
-
         try {
-            FXMLLoader loader = new FXMLLoader(fxmlUrl);
+            // 모든 창 닫기
+            List<Window> windows = new ArrayList<>(Window.getWindows());
+            for (Window window : windows) {
+                if (window instanceof Stage) {
+                    ((Stage) window).close();
+                }
+            }
+
+            // 새 로그인 Stage 생성
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/login.fxml"));
             Parent root = loader.load();
 
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setResizable(false);
-            stage.centerOnScreen();
-            stage.show();
+            Stage loginStage = new Stage();
+            loginStage.setScene(new Scene(root));
+
+            // CafeApplication과 동일한 설정 복사
+            loginStage.getIcons().add(new Image(getClass().getResourceAsStream("/coffee.png")));
+            loginStage.setTitle("Cafe Stuff Management System");
+            loginStage.setResizable(false);
+            loginStage.centerOnScreen();
+
+            loginStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -351,4 +366,5 @@ public class StoreManagementController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
 }
