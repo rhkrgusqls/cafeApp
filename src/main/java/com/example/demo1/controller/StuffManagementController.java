@@ -246,7 +246,7 @@ public class StuffManagementController implements Initializable {
             Parent root = loader.load();
 
             RequestFormController controller = loader.getController();
-            controller.setAffiliationContext(affiliationCode); // 이제는 itemId, quantity는 입력 받음
+            controller.setLoginAffiliationCode(affiliationCode); // 이제는 itemId, quantity는 입력 받음
 
             Stage stage = new Stage();
             stage.setTitle("재고 요청");
@@ -304,6 +304,9 @@ public class StuffManagementController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/itemlist.fxml"));
             Parent root = loader.load();
+
+            ItemlistController controller = loader.getController();
+            controller.setLoginAffiliationCode(loginAffiliationCode);
 
             // controller 넘겨줄 필요가 있다면 이곳에서 setItemId(itemId) 가능
             // ItemlistController controller = loader.getController();

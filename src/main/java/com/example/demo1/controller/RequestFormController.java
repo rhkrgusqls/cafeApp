@@ -19,21 +19,21 @@ public class RequestFormController {
     @FXML private TextField QuantityField;
     @FXML private Button submitBtn;
 
-    private String affiliationCode; // 외부에서 주입
+    private String loginAffiliationCode; // 외부에서 주입
 
-//    public void setRequestContext(int itemId, int quantity, String affiliationCode) {
-//        itemIdField.setText(String.valueOf(itemId));
-//        QuantityField.setText(String.valueOf(quantity));
-//        this.affiliationCode = affiliationCode;
-//    }
+    public void setItemId(int itemId) {
+        itemIdField.setText(String.valueOf(itemId));
+        itemIdField.setEditable(false); // 고정
+    }
 
     @FXML
     public void initialize() {
         submitBtn.setOnAction(e -> sendRequest());
     }
 
-    public void setAffiliationContext(String affiliationCode) {
-        this.affiliationCode = affiliationCode;
+    public void setLoginAffiliationCode(String loginAffiliationCode) {
+        this.loginAffiliationCode = loginAffiliationCode;
+        System.out.println("loginAffiliationCode: " + loginAffiliationCode);
     }
 
     private void sendRequest() {
@@ -42,7 +42,7 @@ public class RequestFormController {
             int quantity = Integer.parseInt(QuantityField.getText());
 
             ItemRequestDTO requestPayload = new ItemRequestDTO();
-            requestPayload.setAffiliationCode(affiliationCode); // dto 필드 설정
+            requestPayload.setAffiliationCode(loginAffiliationCode); // dto 필드 설정
 
             ObjectMapper mapper = new ObjectMapper();
             String jsonBody = mapper.writeValueAsString(requestPayload);
