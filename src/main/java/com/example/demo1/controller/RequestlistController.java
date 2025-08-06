@@ -82,7 +82,7 @@ public class RequestlistController implements Initializable {
 
         //필터 메뉴 생성(State)
         ContextMenu filterMenu = new ContextMenu();
-        String[] states = {"전체", "completed", "dismissed", "processed", "re-review-needed"};
+        String[] states = {"전체", "wait", "completed", "dismissed", "processed", "re-review-needed"};
         for (String state : states) {
             MenuItem menuItem = new MenuItem(state);
             menuItem.setOnAction(e -> filterByState(state.equals("전체") ? null : state));
