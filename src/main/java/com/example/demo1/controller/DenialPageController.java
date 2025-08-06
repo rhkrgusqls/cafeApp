@@ -6,12 +6,8 @@ import com.example.demo1.dto.OrderRejectionHistoryDTO;
 import com.example.demo1.properties.ConfigLoader;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
-import javafx.scene.control.TableView;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -37,7 +33,21 @@ public class DenialPageController {
 
     @FXML
     private void initialize() {
-        denyBtn.setOnAction(e -> sendDismissedRequest());
+        denyBtn.setOnAction(e -> showConfirmDialog());
+    }
+
+    //요청 거부 시 의사 재확인
+    private void showConfirmDialog() {
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("거부 확인");
+        confirmAlert.setHeaderText(null);
+        confirmAlert.setContentText("정말 거부하시겠습니까?");
+
+        confirmAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                sendDismissedRequest();
+            }
+        });
     }
 
     private void sendDismissedRequest() {
