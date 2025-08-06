@@ -44,4 +44,27 @@ public class ModeBtnsUDController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void onUpdate() {
+        try {
+            StuffDTO dto = (StuffDTO) parentCell.getTableView().getItems().get(parentCell.getIndex());
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/StuffUpdate.fxml"));
+            AnchorPane root = loader.load();
+
+            StuffUpdateController controller = loader.getController();
+            controller.setItemData(dto, parentController);
+
+            Stage stage = new Stage();
+            stage.setTitle("재고 수정");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.centerOnScreen();
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

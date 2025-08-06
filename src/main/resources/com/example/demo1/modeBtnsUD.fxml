@@ -6,7 +6,7 @@
 
 <AnchorPane prefHeight="22.0" prefWidth="66.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.controller.ModeBtnsUDController">
    <children>
-      <Button fx:id="updateBtn" layoutX="64.0" mnemonicParsing="false" text="재고수정" />
+      <Button fx:id="updateBtn" layoutX="64.0" mnemonicParsing="false" text="재고수정" onAction="#onUpdate"/>
       <Button fx:id="decreaseBtn" mnemonicParsing="false" text="재고감소" onAction="#onDecrease"/>
    </children>
 </AnchorPane>

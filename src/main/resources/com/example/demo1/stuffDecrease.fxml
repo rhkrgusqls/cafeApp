@@ -31,7 +31,7 @@
       <TextField fx:id="nameField" editable="false" layoutX="138.0" layoutY="134.0" />
       <TextField fx:id="quantityField" editable="false" layoutX="138.0" layoutY="181.0" />
       <TextField fx:id="decreaseField" layoutX="138.0" layoutY="228.0" promptText="줄어든 수량을 입력하세요" />
-      <Button fx:id="confirmBtn" layoutX="141.0" layoutY="276.0" mnemonicParsing="false" text="Confirm" onAction="#onConfirm"/>
+      <Button fx:id="confirmBtn" layoutX="141.0" layoutY="276.0" mnemonicParsing="false" onAction="#onConfirm" text="Confirm" />
       <Text layoutX="47.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quantity">
          <font>
             <Font name="Comic Sans MS" size="18.0" />
@@ -42,5 +42,6 @@
             <Font name="Comic Sans MS" size="18.0" />
          </font>
       </Text>
+      <Text layoutX="55.0" layoutY="215.0" strokeType="OUTSIDE" strokeWidth="0.0" text="(이전 수량)" wrappingWidth="60.0" />
    </children>
 </AnchorPane>
