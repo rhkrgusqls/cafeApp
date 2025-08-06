@@ -50,6 +50,11 @@
                <font><Font size="14.0" /></font>
             </Text>
             <TextField fx:id="storeNameField" layoutX="491.0" layoutY="195.0" />
+            <Text layoutX="8.0" layoutY="386.0" strokeType="OUTSIDE" strokeWidth="0.0" text="※더블 클릭 시 주문 내역을 확인할 수 있습니다.">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Text>
          </children>
       </AnchorPane>
 

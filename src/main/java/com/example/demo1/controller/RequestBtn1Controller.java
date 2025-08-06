@@ -5,10 +5,14 @@ import com.example.demo1.dto.OrderDTO;
 import com.example.demo1.properties.ConfigLoader;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,7 +44,7 @@ public class RequestBtn1Controller {
         }
 
         agreeBtn.setOnAction(e -> showConfirmDialog(order, true));
-        disagreeBtn.setOnAction(e -> showConfirmDialog(order, false));
+        disagreeBtn.setOnAction(e -> openDenialPage(order));
     }
 
     // 확인창 표시
@@ -105,5 +109,24 @@ public class RequestBtn1Controller {
                 ex.printStackTrace();
             }
         }).start();
+    }
+    private void openDenialPage(OrderDTO order) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/DenialPage.fxml"));
+            AnchorPane root = loader.load();
+
+            DenialPageController controller = loader.getController();
+            controller.setOrder(order, tableView);
+            controller.enableEditMode(); // 입력 모드 활성화
+
+            Stage stage = new Stage();
+            stage.setTitle("거절 사유 입력");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

@@ -20,7 +20,7 @@
                   <TableColumn fx:id="itemIdColumn" prefWidth="57.0" text="ItemID" />
                   <TableColumn fx:id="quantityColumn" prefWidth="72.0" text="Quantity" />
                   <TableColumn fx:id="affiliationCodeColumn" prefWidth="103.0" text="AffiliationCode" />
-                  <TableColumn fx:id="stateColumn" prefWidth="61.0" text="State" />
+                  <TableColumn fx:id="stateColumn" prefWidth="61.0" />
                   <TableColumn fx:id="orderDateColumn" prefWidth="130.0" text="OrderDate" />
                   <TableColumn fx:id="modeColumn" prefWidth="159.0" text="Mode" />
               </columns>

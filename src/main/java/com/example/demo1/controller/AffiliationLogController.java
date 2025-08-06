@@ -9,10 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 
@@ -34,15 +31,35 @@ public class AffiliationLogController {
 
     private String loginAffiliationCode;
 
-    // FXML 로드 후 자동 실행되는 초기화 메서드
+    // 전체 데이터 저장
+    private ObservableList<HistoryDTO> allHistory = FXCollections.observableArrayList();
+
     @FXML
     public void initialize() {
         orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
         itemIdColumn.setCellValueFactory(new PropertyValueFactory<>("itemId"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        stateColumn.setCellValueFactory(new PropertyValueFactory<>("state")); // DTO의 필드명
-        orderDateColumn.setCellValueFactory(new PropertyValueFactory<>("orderDate")); // DTO의 필드명
+        stateColumn.setCellValueFactory(new PropertyValueFactory<>("state"));
+        orderDateColumn.setCellValueFactory(new PropertyValueFactory<>("orderDate"));
 
+        // 정렬 비활성화
+        stateColumn.setSortable(false);
+
+        // 상태 필터 메뉴
+        ContextMenu filterMenu = new ContextMenu();
+        String[] states = {"전체", "completed", "dismissed", "processed", "re-review-needed"};
+        for (String state : states) {
+            MenuItem menuItem = new MenuItem(state);
+            menuItem.setOnAction(e -> filterByState(state.equals("전체") ? null : state));
+            filterMenu.getItems().add(menuItem);
+        }
+
+        // 헤더 클릭 시 메뉴 표시
+        Label stateHeader = new Label("State ▼");
+        stateHeader.setOnMouseClicked(e -> filterMenu.show(stateHeader, e.getScreenX(), e.getScreenY()));
+        stateColumn.setGraphic(stateHeader);
+
+        // mode 버튼 셀
         mode.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -55,23 +72,28 @@ public class AffiliationLogController {
 
                 HistoryDTO dto = getTableView().getItems().get(getIndex());
 
-                if ("processed".equalsIgnoreCase(dto.getState()) && !"101".equals(loginAffiliationCode)) {
-                    try {
+                try {
+                    if ("processed".equalsIgnoreCase(dto.getState()) && !"101".equals(loginAffiliationCode)) {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/modeBtnsRC.fxml"));
                         AnchorPane pane = loader.load();
                         ModeBtnsRCController btnController = loader.getController();
 
-                        // 콜백: 현재 테이블 데이터 다시 불러오기
                         Runnable refreshCallback = () -> loadStockHistory();
-
                         btnController.init(dto.getOrderId(), loginAffiliationCode, refreshCallback);
-
                         setGraphic(pane);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+
+                    } else if ("dismissed".equalsIgnoreCase(dto.getState())) {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/denyReasonBtn.fxml"));
+                        AnchorPane pane = loader.load();
+                        DenyReasonBtnController btnController = loader.getController();
+                        btnController.setOrder(dto.toOrderDTO());
+                        setGraphic(pane);
+
+                    } else {
                         setGraphic(null);
                     }
-                } else {
+                } catch (IOException e) {
+                    e.printStackTrace();
                     setGraphic(null);
                 }
             }
@@ -82,7 +104,6 @@ public class AffiliationLogController {
         this.loginAffiliationCode = affiliationCode;
         loadStockHistory();
     }
-
 
     private void loadStockHistory() {
         new Thread(() -> {
@@ -108,8 +129,8 @@ public class AffiliationLogController {
                     HistoryDTO[] stockHistories = mapper.readValue(is, HistoryDTO[].class);
 
                     Platform.runLater(() -> {
-                        ObservableList<HistoryDTO> data = FXCollections.observableArrayList(stockHistories);
-                        historyTable.setItems(data);
+                        allHistory.setAll(stockHistories); // 전체 데이터 저장
+                        historyTable.setItems(allHistory);
                     });
                 } else {
                     Platform.runLater(() -> historyTable.setPlaceholder(new Label("서버 오류: " + responseCode)));
@@ -120,5 +141,14 @@ public class AffiliationLogController {
                 Platform.runLater(() -> historyTable.setPlaceholder(new Label("불러오기 실패")));
             }
         }).start();
+    }
+
+    // 상태별 필터 적용
+    private void filterByState(String state) {
+        if (state == null) {
+            historyTable.setItems(allHistory);
+        } else {
+            historyTable.setItems(allHistory.filtered(o -> state.equalsIgnoreCase(o.getState())));
+        }
     }
 }
