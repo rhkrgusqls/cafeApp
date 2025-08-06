@@ -94,6 +94,8 @@ public class StuffManagementController implements Initializable {
             return row;
         });
 
+        //stuffTable.getScene().setUserData(this);
+
         colMode.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -106,7 +108,20 @@ public class StuffManagementController implements Initializable {
 
                 StuffDTO dto = getTableView().getItems().get(getIndex());
 
-                if ("defective".equalsIgnoreCase(dto.getStatus())) {
+                if ("available".equalsIgnoreCase(dto.getStatus())) {
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/modeBtnsUD.fxml"));
+                        AnchorPane pane = loader.load();
+
+                        ModeBtnsUDController controller = loader.getController();
+                        controller.init(this, StuffManagementController.this);
+
+                        setGraphic(pane);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        setGraphic(null);
+                    }
+                }else if ("defective".equalsIgnoreCase(dto.getStatus())) {
                     try {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/modeBtnsDel.fxml"));
                         AnchorPane pane = loader.load(); // 먼저 로드
