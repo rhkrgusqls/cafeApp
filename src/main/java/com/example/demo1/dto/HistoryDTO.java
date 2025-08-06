@@ -54,6 +54,17 @@ public class HistoryDTO {
         this.orderDate = orderDate;
     }
 
+    public OrderDTO toOrderDTO() {
+        OrderDTO order = new OrderDTO();
+        order.setOrderId(this.getOrderId());
+        order.setItemId(this.getItemId());
+        order.setQuantity(this.getQuantity());
+       // order.setAffiliationCode(this.getAffiliationCode()); // 필드 있으면 설정
+        order.setState(this.getState());
+        order.setOrderDate(this.getOrderDate());
+        return order;
+    }
+
 //    public String getAffiliationCode() {
 //        return affiliationCode;
 //    }

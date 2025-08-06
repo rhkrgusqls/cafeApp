@@ -2,6 +2,7 @@ package com.example.demo1.controller;
 
 import com.example.demo1.controller.util.Cookie;
 import com.example.demo1.dto.OrderDTO;
+import com.example.demo1.dto.OrderRejectionHistoryDTO;
 import com.example.demo1.properties.ConfigLoader;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -81,6 +82,55 @@ public class DenialPageController {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 Platform.runLater(() -> showAlert("오류", "서버 요청 실패"));
+            }
+        }).start();
+    }
+
+    public void enableEditMode() { // 거부 사유 입력모드
+        textArea.setEditable(true);
+        denyBtn.setVisible(true);
+        denyBtn.setManaged(true);
+    }
+
+    public void showReasonMode() { // 거부 사유 조회모드
+        textArea.setEditable(false);
+        denyBtn.setVisible(false);
+        denyBtn.setManaged(false);
+
+        new Thread(() -> {
+            try {
+                String urlStr = String.format(
+                        "http://%s:%s/ordering/rejections",
+                        ConfigLoader.getIp(),
+                        ConfigLoader.getPort()
+                );
+
+                HttpURLConnection conn = (HttpURLConnection) new URL(urlStr).openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
+
+                com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                java.util.List<OrderRejectionHistoryDTO> list = mapper.readValue(
+                        conn.getInputStream(),
+                        new com.fasterxml.jackson.core.type.TypeReference<java.util.List<OrderRejectionHistoryDTO>>() {}
+                );
+
+                String reasonText = list.stream()
+                        .filter(r -> r.getOrderId() == order.getOrderId())
+                        .map(r -> String.format(
+                                "거부 사유: %s\n비고: %s\n시간: %s",
+                                r.getRejectionReason(),
+                                (r.getNotes() == null || r.getNotes().isBlank()) ? "-" : r.getNotes(),
+                                r.getRejectionTime()
+                        ))
+                        .findFirst()
+                        .orElse("해당 주문의 거부 사유가 없습니다.");
+
+                Platform.runLater(() -> textArea.setText(reasonText));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Platform.runLater(() -> textArea.setText("거부 사유를 불러오는 중 오류 발생"));
             }
         }).start();
     }

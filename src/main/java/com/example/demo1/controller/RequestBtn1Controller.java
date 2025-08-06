@@ -117,6 +117,7 @@ public class RequestBtn1Controller {
 
             DenialPageController controller = loader.getController();
             controller.setOrder(order, tableView);
+            controller.enableEditMode(); // 입력 모드 활성화
 
             Stage stage = new Stage();
             stage.setTitle("거절 사유 입력");

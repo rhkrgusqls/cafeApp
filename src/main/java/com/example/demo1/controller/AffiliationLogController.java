@@ -55,23 +55,31 @@ public class AffiliationLogController {
 
                 HistoryDTO dto = getTableView().getItems().get(getIndex());
 
-                if ("processed".equalsIgnoreCase(dto.getState()) && !"101".equals(loginAffiliationCode)) {
-                    try {
+                try {
+                    if ("processed".equalsIgnoreCase(dto.getState()) && !"101".equals(loginAffiliationCode)) {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/modeBtnsRC.fxml"));
                         AnchorPane pane = loader.load();
                         ModeBtnsRCController btnController = loader.getController();
 
-                        // 콜백: 현재 테이블 데이터 다시 불러오기
                         Runnable refreshCallback = () -> loadStockHistory();
-
                         btnController.init(dto.getOrderId(), loginAffiliationCode, refreshCallback);
-
                         setGraphic(pane);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+
+                    } else if ("dismissed".equalsIgnoreCase(dto.getState())) {
+                        // 거부 사유 버튼
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/denyReasonBtn.fxml"));
+                        AnchorPane pane = loader.load();
+                        DenyReasonBtnController btnController = loader.getController();
+
+                        // HistoryDTO → OrderDTO 변환해서 전달
+                        btnController.setOrder(dto.toOrderDTO());
+                        setGraphic(pane);
+
+                    } else {
                         setGraphic(null);
                     }
-                } else {
+                } catch (IOException e) {
+                    e.printStackTrace();
                     setGraphic(null);
                 }
             }
