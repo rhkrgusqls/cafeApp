@@ -311,7 +311,7 @@ public class StuffManagementController implements Initializable {
     private void onHistoryBtn() {
         try {
             // `affiliationCode`를 전달하여 재고 기록 화면을 연다
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/affiliationLog.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/affiliationRequestList.fxml"));
             Parent history = loader.load();
             AffiliationLogController controller = loader.getController();
             controller.setAffiliationContext(loginAffiliationCode); // 로그인한 사용자 점포 코드 전달

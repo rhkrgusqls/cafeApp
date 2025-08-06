@@ -22,7 +22,7 @@
           <TableColumn fx:id="orderIdColumn" prefWidth="54.0" resizable="false" text="OrderID" />
           <TableColumn fx:id="itemIdColumn" prefWidth="56.0" resizable="false" text="ItemID" />
             <TableColumn fx:id="quantityColumn" prefWidth="60.0" resizable="false" text="Quantity" />
-            <TableColumn fx:id="stateColumn" prefWidth="75.0" resizable="false" text="State" />
+            <TableColumn fx:id="stateColumn" prefWidth="75.0" resizable="false" />
             <TableColumn fx:id="orderDateColumn" prefWidth="105.0" resizable="false" text="OrderDate" />
             <TableColumn fx:id="mode" prefWidth="143.0" text="Mode" />
         </columns>
