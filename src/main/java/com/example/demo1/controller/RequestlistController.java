@@ -40,7 +40,7 @@ public class RequestlistController implements Initializable {
         loadOrders();
     }
 
-    private void loadOrders() {
+    public void loadOrders() {
         new Thread(() -> {
             try {
                 URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/ordering/display");

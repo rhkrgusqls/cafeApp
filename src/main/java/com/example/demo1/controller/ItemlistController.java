@@ -231,7 +231,7 @@ public class ItemlistController implements Initializable {
         }
     }
 
-    protected void loadItemList() {
+    public void loadItemList() {
         new Thread(() -> {
             try {
                 URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/items/list");

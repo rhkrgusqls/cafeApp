@@ -3,6 +3,7 @@ package com.example.demo1.controller;
 import com.example.demo1.controller.util.Cookie;
 import com.example.demo1.dto.StuffDTO;
 import com.example.demo1.properties.ConfigLoader;
+import com.example.demo1.refresh.AffiliationRequestListRefresh;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;

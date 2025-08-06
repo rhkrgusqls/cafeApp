@@ -125,7 +125,7 @@ public class StoreManagementController implements Initializable {
         this.loginAffiliationCode = code;
     }
 
-    private void loadStoreList() {
+    public void loadStoreList() {
         new Thread(() -> {
             List<StoreDTO> storeList = fetchStoresFromApi();
             Platform.runLater(() -> {
