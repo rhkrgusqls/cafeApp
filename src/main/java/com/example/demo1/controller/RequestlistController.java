@@ -90,22 +90,30 @@ public class RequestlistController implements Initializable {
 
                 OrderDTO order = table.getItems().get(getIndex());
 
-                if ("wait".equalsIgnoreCase(order.getState())||
-                        "re-review-needed".equalsIgnoreCase(order.getState())) {
-                    try {
+                try {
+                    if ("wait".equalsIgnoreCase(order.getState()) ||
+                            "re-review-needed".equalsIgnoreCase(order.getState())) {
+
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/requestBtn1.fxml"));
                         Node node = loader.load();
                         RequestBtn1Controller controller = loader.getController();
-
                         controller.setOrder(order, table);
-
                         setGraphic(node);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        setGraphic(null);
+
+                    } else if ("dismissed".equalsIgnoreCase(order.getState())) {
+                        // dismissed 상태 → 거부사유 버튼 표시
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/denyReasonBtn.fxml"));
+                        Node node = loader.load();
+                        DenyReasonBtnController controller = loader.getController();
+                        controller.setOrder(order); // OrderDTO 전달
+                        setGraphic(node);
+
+                    } else {
+                        setGraphic(null); // 다른 상태는 빈 칸
                     }
-                } else {
-                    setGraphic(null); // wait 상태 아닐 경우 버튼 숨김
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    setGraphic(null);
                 }
             }
         });
