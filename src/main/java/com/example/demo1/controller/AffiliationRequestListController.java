@@ -19,7 +19,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class AffiliationLogController {
+public class AffiliationRequestListController {
 
     @FXML private TableView<HistoryDTO> historyTable;
     @FXML private TableColumn<HistoryDTO, Integer> orderIdColumn;
