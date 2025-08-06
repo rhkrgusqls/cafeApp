@@ -59,8 +59,29 @@ public class StuffManagementController implements Initializable {
         colReceivedDate.setCellValueFactory(new PropertyValueFactory<>("receivedDate"));
         colExpireDate.setCellValueFactory(new PropertyValueFactory<>("expireDate"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+        colStatus.setSortable(false);
         colAffiliationCode.setCellValueFactory(new PropertyValueFactory<>("affiliationCode"));
         colMode.setCellValueFactory(new PropertyValueFactory<>("mode"));
+
+        ContextMenu statusFilterMenu = new ContextMenu();
+        MenuItem allItem = new MenuItem("All");
+        MenuItem availableItem = new MenuItem("Available");
+        MenuItem defectiveItem = new MenuItem("Defective");
+        MenuItem depletedItem = new MenuItem("Depleted");
+
+        allItem.setOnAction(e -> loadStuffListWithState(null));
+        availableItem.setOnAction(e -> loadStuffListWithState("available"));
+        defectiveItem.setOnAction(e -> loadStuffListWithState("defective"));
+        depletedItem.setOnAction(e -> loadStuffListWithState("depleted"));
+
+        statusFilterMenu.getItems().addAll(allItem, availableItem, defectiveItem, depletedItem);
+
+        Label statusHeader = new Label("Status ▼");
+        statusHeader.setOnMouseClicked(event ->
+                statusFilterMenu.show(statusHeader, event.getScreenX(), event.getScreenY())
+        );
+        colStatus.setGraphic(statusHeader);
+
         colStatus.setCellFactory(column -> new TableCell<StuffDTO, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -220,6 +241,35 @@ public class StuffManagementController implements Initializable {
             }
         }).start();
     }
+
+    private void loadStuffListWithState(String state) {
+        new Thread(() -> {
+            try {
+                String query = (state != null && !state.isEmpty()) ? "?state=" + state : "";
+                URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/itemStock/list" + query);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
+                conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
+
+                String jsonBody = String.format("{\"affiliationCode\":\"%s\"}", viewAffiliationCode);
+                try (java.io.OutputStream os = conn.getOutputStream()) {
+                    os.write(jsonBody.getBytes("utf-8"));
+                }
+
+                if (conn.getResponseCode() == 200) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    StuffDTO[] items = mapper.readValue(conn.getInputStream(), StuffDTO[].class);
+                    Platform.runLater(() -> stuffTable.getItems().setAll(items));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
 
     public void loadAllStock() {
         new Thread(() -> {
