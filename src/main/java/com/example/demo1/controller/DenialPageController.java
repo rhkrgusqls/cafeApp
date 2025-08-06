@@ -18,7 +18,8 @@ public class DenialPageController {
 
     @FXML private TextField orderIdField;
     @FXML private TextField affiliationField;
-    @FXML private TextArea textArea;
+    @FXML private TextField reasonTitle;
+    @FXML private TextArea reasonText;
     @FXML private Button denyBtn;
 
     private OrderDTO order;
@@ -51,7 +52,9 @@ public class DenialPageController {
     }
 
     private void sendDismissedRequest() {
-        String reason = textArea.getText().trim();
+        String reason = reasonTitle.getText().trim();
+        String notes = reasonText.getText().trim();
+
         if (reason.isEmpty()) {
             showAlert("오류", "거절 사유를 입력하세요.");
             return;
@@ -60,11 +63,12 @@ public class DenialPageController {
         new Thread(() -> {
             try {
                 String urlStr = String.format(
-                        "http://%s:%s/ordering/dismissed?order_id=%d&reason=%s",
+                        "http://%s:%s/ordering/dismissed?order_id=%d&reason=%s&notes=%s",
                         ConfigLoader.getIp(),
                         ConfigLoader.getPort(),
                         order.getOrderId(),
-                        java.net.URLEncoder.encode(reason, StandardCharsets.UTF_8)
+                        java.net.URLEncoder.encode(reason, StandardCharsets.UTF_8),
+                        java.net.URLEncoder.encode(notes, StandardCharsets.UTF_8)
                 );
 
                 URL url = new URL(urlStr);
@@ -97,13 +101,15 @@ public class DenialPageController {
     }
 
     public void enableEditMode() { // 거부 사유 입력모드
-        textArea.setEditable(true);
+        reasonTitle.setEditable(true);
+        reasonText.setEditable(true);
         denyBtn.setVisible(true);
         denyBtn.setManaged(true);
     }
 
     public void showReasonMode() { // 거부 사유 조회모드
-        textArea.setEditable(false);
+        reasonTitle.setEditable(false);
+        reasonText.setEditable(false);
         denyBtn.setVisible(false);
         denyBtn.setManaged(false);
 
@@ -125,22 +131,30 @@ public class DenialPageController {
                         new com.fasterxml.jackson.core.type.TypeReference<java.util.List<OrderRejectionHistoryDTO>>() {}
                 );
 
-                String reasonText = list.stream()
+                // 해당 주문 건 찾기
+                OrderRejectionHistoryDTO match = list.stream()
                         .filter(r -> r.getOrderId() == order.getOrderId())
-                        .map(r -> String.format(
-                                "거부 사유: %s\n비고: %s\n시간: %s",
-                                r.getRejectionReason(),
-                                (r.getNotes() == null || r.getNotes().isBlank()) ? "-" : r.getNotes(),
-                                r.getRejectionTime()
-                        ))
                         .findFirst()
-                        .orElse("해당 주문의 거부 사유가 없습니다.");
+                        .orElse(null);
 
-                Platform.runLater(() -> textArea.setText(reasonText));
+                Platform.runLater(() -> {
+                    if (match != null) {
+                        reasonTitle.setText(match.getRejectionReason());
+                        reasonText.setText(
+                                (match.getNotes() == null || match.getNotes().isBlank()) ? "-" : match.getNotes()
+                        );
+                    } else {
+                        reasonTitle.setText("해당 주문의 거부 사유가 없습니다.");
+                        reasonText.setText("-");
+                    }
+                });
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Platform.runLater(() -> textArea.setText("거부 사유를 불러오는 중 오류 발생"));
+                Platform.runLater(() -> {
+                    reasonTitle.setText("거부 사유를 불러오는 중 오류 발생");
+                    reasonText.setText("-");
+                });
             }
         }).start();
     }

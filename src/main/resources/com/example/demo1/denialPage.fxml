@@ -18,7 +18,8 @@
             <Font name="Freestyle Script" size="52.0" />
          </font>
       </Text>
-      <TextArea fx:id="textArea" editable="false" layoutX="55.0" layoutY="107.0" prefHeight="237.0" prefWidth="491.0" promptText="Write why denial of requests." />
+      <TextField fx:id="reasonTitle" editable="false" layoutX="55.0" layoutY="128.0" prefHeight="22.0" prefWidth="491.0" promptText="거부 의사에 대한 제목을 쓰세요." />
+      <TextArea fx:id="reasonText" editable="false" layoutX="55.0" layoutY="178.0" prefHeight="177.0" prefWidth="491.0" promptText="거부 의사에 대한 비고" />
       <Button fx:id="denyBtn" layoutX="493.0" layoutY="364.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="53.0" text="Deny" />
       <Text layoutX="56.0" layoutY="95.0" managed="false" strokeType="OUTSIDE" strokeWidth="0.0" text="OrderID: " visible="false">
          <font>
@@ -26,13 +27,23 @@
          </font>
       </Text>
       <TextField fx:id="orderIdField" editable="false" layoutX="126.0" layoutY="78.0" prefHeight="22.0" prefWidth="75.0" />
-      <Text visible="false" layoutX="385.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Affiliation: ">
+      <Text layoutX="385.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Affiliation: " visible="false">
          <font>
             <Font name="Calibri Light" size="18.0" />
          </font>
       </Text>
-      <TextField fx:id="affiliationField" visible="false" layoutX="471.0" layoutY="78.0" prefHeight="22.0" prefWidth="75.0" />
+      <TextField fx:id="affiliationField" layoutX="471.0" layoutY="78.0" prefHeight="22.0" prefWidth="75.0" visible="false" />
       <Text layoutX="55.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="OrderID:">
+         <font>
+            <Font name="Calibri Light" size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="59.0" layoutY="125.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title">
+         <font>
+            <Font name="Calibri Light" size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="60.0" layoutY="174.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reason">
          <font>
             <Font name="Calibri Light" size="18.0" />
          </font>
