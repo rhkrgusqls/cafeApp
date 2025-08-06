@@ -23,7 +23,7 @@
             <TableColumn fx:id="colItemID" prefWidth="47.0" resizable="false" text="ItemID" />
             <TableColumn fx:id="colName" prefWidth="181.0" resizable="false" text="Name" />
             <TableColumn fx:id="colCategory" prefWidth="94.0" resizable="false" text="Category" />
-            <TableColumn fx:id="colState" prefWidth="93.0" resizable="false" text="State" />
+            <TableColumn fx:id="colState" prefWidth="93.0" resizable="false" />
         </columns>
       </TableView>
       <Button fx:id="addBtn" layoutX="388.0" layoutY="22.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="53.0" text="Add" visible="false" />

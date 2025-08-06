@@ -40,6 +40,8 @@ public class ItemlistController implements Initializable {
     private String loginAffiliationCode;
     private boolean priStockMode = false;
 
+    private ObservableList<ItemDTO> originalData = FXCollections.observableArrayList();
+
     public void setLoginAffiliationCode(String loginAffiliationCode) {
     //    this.requestMode = true; // 요청 모드 켜기
         this.loginAffiliationCode = loginAffiliationCode;
@@ -57,6 +59,18 @@ public class ItemlistController implements Initializable {
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
         colState.setCellValueFactory(new PropertyValueFactory<>("state"));
+        colState.setSortable(false);
+        // 필터 메뉴
+        ContextMenu filterMenu = new ContextMenu();
+        String[] states = {"전체", "available", "unavailable"};
+        for (String state : states) {
+            MenuItem menuItem = new MenuItem(state);
+            menuItem.setOnAction(e -> filterByState(state.equals("전체") ? null : state));
+            filterMenu.getItems().add(menuItem);
+        }
+        Label stateHeader = new Label("State ▼");
+        stateHeader.setOnMouseClicked(e -> filterMenu.show(stateHeader, e.getScreenX(), e.getScreenY()));
+        colState.setGraphic(stateHeader);
 
         tableView.setRowFactory(tv -> {
             TableRow<ItemDTO> row = new TableRow<>();
@@ -102,6 +116,17 @@ public class ItemlistController implements Initializable {
 
         addBtn.setOnAction(e -> openItemInfo());
         loadItemList();
+    }
+
+    private void filterByState(String state) {
+        if (state == null) { // 전체 보기
+            tableView.setItems(FXCollections.observableArrayList(originalData));
+        } else {
+            ObservableList<ItemDTO> filtered = originalData.filtered(
+                    item -> state.equalsIgnoreCase(item.getState())
+            );
+            tableView.setItems(FXCollections.observableArrayList(filtered));
+        }
     }
 
     private void showConfirmAndChangeState(int itemId, String newState) {
@@ -221,8 +246,8 @@ public class ItemlistController implements Initializable {
                     ItemDTO[] items = mapper.readValue(is, ItemDTO[].class);
 
                     Platform.runLater(() -> {
-                        ObservableList<ItemDTO> data = FXCollections.observableArrayList(items);
-                        tableView.setItems(data);
+                        originalData.setAll(items); // 원본 리스트 저장
+                        tableView.setItems(FXCollections.observableArrayList(originalData)); // 테이블에 표시
                     });
                 } else {
                     Platform.runLater(() -> {
