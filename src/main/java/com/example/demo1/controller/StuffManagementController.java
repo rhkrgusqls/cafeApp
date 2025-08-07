@@ -366,6 +366,9 @@ public class StuffManagementController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/totalItemList.fxml"));
             Parent history = loader.load();
 
+            TotalItemListController controller = loader.getController();
+            controller.setLoginAffiliationCode(loginAffiliationCode);
+
             Stage stage = new Stage();
             stage.setTitle("전체 재고");
             stage.setScene(new Scene(history));

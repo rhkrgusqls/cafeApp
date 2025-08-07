@@ -9,13 +9,15 @@ import com.example.demo1.refresh.TotalItemListRefresh;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -39,6 +41,12 @@ public class TotalItemListController implements Initializable {
 
     private static boolean suppressLowStockPopup = false; // 로그인 후부터 유효, 팝업창 다시 보지 않기
 
+    private String loginAffiliationCode; // 로그인 후 주입받는 값
+
+    public void setLoginAffiliationCode(String code) {
+        this.loginAffiliationCode = code;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         suppressLowStockPopup = false; // 로그인 시 초기화
@@ -51,6 +59,29 @@ public class TotalItemListController implements Initializable {
         colRealQty.setCellValueFactory(new PropertyValueFactory<>("realQuantity"));
         colLimitQty.setCellValueFactory(new PropertyValueFactory<>("limitQuantity"));
         colWithinLimit.setCellValueFactory(new PropertyValueFactory<>("withinLimit"));
+
+        colWithinLimit.setCellFactory(col -> new TableCell<>() {
+            private final Button requestBtn = new Button("요청");
+
+            {
+                requestBtn.setOnAction(e -> {
+                    ItemLimitViewDTO dto = getTableView().getItems().get(getIndex());
+                    openRequestForm(dto.getItemId());
+                });
+            }
+
+            @Override
+            protected void updateItem(Boolean withinLimit, boolean empty) {
+                super.updateItem(withinLimit, empty);
+
+                if (empty || withinLimit == null || !withinLimit) {
+                    setGraphic(null);  // false이거나 비었으면 버튼 없음
+                } else {
+                    setGraphic(requestBtn); // true면 버튼 표시
+                }
+                setText(null); // 텍스트는 제거
+            }
+        });
 
         TotalItemListRefresh.registerController(this);
 
@@ -77,6 +108,26 @@ public class TotalItemListController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
             return Map.of();  // 빈 맵 반환
+        }
+    }
+
+    private void openRequestForm(int itemId) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/requestForm.fxml"));
+            Parent root = loader.load();
+
+            RequestFormController controller = loader.getController();
+            controller.setItemId(itemId);
+            controller.setLoginAffiliationCode(loginAffiliationCode); // 소속 코드 주입
+
+            Stage stage = new Stage();
+            stage.setTitle("재고 요청");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -133,7 +184,6 @@ public class TotalItemListController implements Initializable {
         }).start();
     }
 
-
     public void loadItemLimitData() {
         new Thread(() -> {
             try {
@@ -185,16 +235,6 @@ public class TotalItemListController implements Initializable {
                             return itemInfo != null ? itemInfo.getName() : "Unknown";
                         })
                         .toList();
-
-//                if (!lowStockList.isEmpty()) {
-//                    Platform.runLater(() -> {
-//                        Alert alert = new Alert(Alert.AlertType.WARNING);
-//                        alert.setTitle("재고 부족 경고");
-//                        alert.setHeaderText(null);
-//                        alert.setContentText(String.join(", ", lowStockList) + " 재고가 부족합니다.\n재고 요청을 고려해보세요.");
-//                        alert.showAndWait();
-//                    });
-//                }
 
                 if (!suppressLowStockPopup && !lowStockList.isEmpty()) {
                     Platform.runLater(() -> {
