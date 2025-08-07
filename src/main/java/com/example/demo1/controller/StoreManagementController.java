@@ -163,21 +163,6 @@ public class StoreManagementController implements Initializable {
         }).start();
     }
 
-    private void openItemList() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/itemlist.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("아이템 목록");
-            stage.setScene(new Scene(root));
-            stage.setResizable(false);
-            stage.centerOnScreen();
-            stage.show();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
     private List<StoreDTO> fetchStoresFromApi() {
         try {
             URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/affiliation/list");
