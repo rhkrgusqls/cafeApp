@@ -1,5 +1,6 @@
 package com.example.demo1.controller;
 
+import com.example.demo1.controller.util.RefreshAll;
 import com.example.demo1.dto.StuffDTO;
 import com.example.demo1.properties.ConfigLoader;
 import com.example.demo1.controller.util.Cookie;
@@ -94,6 +95,7 @@ public class StuffDecreaseController {
                 String message = response.toString();
 
                 javafx.application.Platform.runLater(() -> {
+                    new RefreshAll();
                     showAlert("결과", message);
 
                     // 창 닫기

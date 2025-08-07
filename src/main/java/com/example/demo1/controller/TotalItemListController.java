@@ -5,6 +5,7 @@ import com.example.demo1.dto.ItemDTO;
 import com.example.demo1.dto.ItemLimitDTO;
 import com.example.demo1.dto.ItemLimitViewDTO;
 import com.example.demo1.properties.ConfigLoader;
+import com.example.demo1.refresh.TotalItemListRefresh;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -14,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -35,9 +37,12 @@ public class TotalItemListController implements Initializable {
     @FXML private TableColumn<ItemLimitViewDTO, Integer> colLimitQty;
     @FXML private TableColumn<ItemLimitViewDTO, Boolean> colWithinLimit;
 
+    private static boolean suppressLowStockPopup = false; // 로그인 후부터 유효, 팝업창 다시 보지 않기
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        suppressLowStockPopup = false; // 로그인 시 초기화
+
         itemInfoMap = fetchItemInfoMap();
 
         colItemId.setCellValueFactory(new PropertyValueFactory<>("itemId"));
@@ -46,6 +51,8 @@ public class TotalItemListController implements Initializable {
         colRealQty.setCellValueFactory(new PropertyValueFactory<>("realQuantity"));
         colLimitQty.setCellValueFactory(new PropertyValueFactory<>("limitQuantity"));
         colWithinLimit.setCellValueFactory(new PropertyValueFactory<>("withinLimit"));
+
+        TotalItemListRefresh.registerController(this);
 
         loadItemList();
         loadItemLimitData();
@@ -127,7 +134,7 @@ public class TotalItemListController implements Initializable {
     }
 
 
-    private void loadItemLimitData() {
+    public void loadItemLimitData() {
         new Thread(() -> {
             try {
                 URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/itemStock/alarm/list");
@@ -146,6 +153,31 @@ public class TotalItemListController implements Initializable {
                 ObjectMapper mapper = new ObjectMapper();
                 ItemLimitDTO[] itemLimits = mapper.readValue(bytes, ItemLimitDTO[].class);
 
+                if (itemLimits.length == 0) {
+                    Platform.runLater(() -> tableView.getItems().clear());
+                    return;
+                }
+
+                var viewList = Arrays.stream(itemLimits)
+                        .map(dto -> {
+                            ItemDTO itemInfo = itemInfoMap.get(dto.getItemId());
+                            String name = itemInfo != null ? itemInfo.getName() : "Unknown";
+                            String category = itemInfo != null ? itemInfo.getCategory() : "Unknown";
+
+                            return new ItemLimitViewDTO(
+                                    dto.getItemId(),
+                                    name,
+                                    category,
+                                    dto.getRealQuantity(),
+                                    dto.getQuantity(),
+                                    dto.isWithinLimit()
+                            );
+                        })
+                        .toList();
+
+                // 테이블 갱신
+                Platform.runLater(() -> tableView.getItems().setAll(viewList));
+
                 var lowStockList = Arrays.stream(itemLimits)
                         .filter(ItemLimitDTO::isWithinLimit) // 부족한 재고만 필터링
                         .map(dto -> {
@@ -154,13 +186,40 @@ public class TotalItemListController implements Initializable {
                         })
                         .toList();
 
-                if (!lowStockList.isEmpty()) {
+//                if (!lowStockList.isEmpty()) {
+//                    Platform.runLater(() -> {
+//                        Alert alert = new Alert(Alert.AlertType.WARNING);
+//                        alert.setTitle("재고 부족 경고");
+//                        alert.setHeaderText(null);
+//                        alert.setContentText(String.join(", ", lowStockList) + " 재고가 부족합니다.\n재고 요청을 고려해보세요.");
+//                        alert.showAndWait();
+//                    });
+//                }
+
+                if (!suppressLowStockPopup && !lowStockList.isEmpty()) {
                     Platform.runLater(() -> {
                         Alert alert = new Alert(Alert.AlertType.WARNING);
                         alert.setTitle("재고 부족 경고");
                         alert.setHeaderText(null);
-                        alert.setContentText(String.join(", ", lowStockList) + " 재고가 부족합니다.\n재고 요청을 고려해보세요.");
+
+                        // 기존 메시지
+                        String msg = String.join(", ", lowStockList) + " 재고가 부족합니다.\n재고 요청을 고려해보세요.";
+                        Label messageLabel = new Label(msg);
+                        messageLabel.setWrapText(true); // 텍스트 줄바꿈 가능하게
+
+                        // 체크박스 추가
+                        javafx.scene.control.CheckBox suppressBox = new javafx.scene.control.CheckBox("다음 로그인 시까지 보지 않기");
+
+                        // VBox로 묶기
+                        VBox content = new VBox(10, messageLabel, suppressBox);
+                        alert.getDialogPane().setContent(content);
+
                         alert.showAndWait();
+
+                        // 체크된 경우 suppress
+                        if (suppressBox.isSelected()) {
+                            suppressLowStockPopup = true;
+                        }
                     });
                 }
 
@@ -172,5 +231,4 @@ public class TotalItemListController implements Initializable {
             }
         }).start();
     }
-
 }
