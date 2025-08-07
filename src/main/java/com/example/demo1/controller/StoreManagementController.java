@@ -340,8 +340,10 @@ public class StoreManagementController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/stuffManagement.fxml"));
             Parent root = loader.load();
-
             StuffManagementController controller = loader.getController();
+
+            controller.setAffiliationContext(ConfigLoader.getManagerCode(), ConfigLoader.getManagerCode());
+            controller.setViewingAllStock(true);
             controller.loadAllStock(); // 전체 조회 메서드 호출
 
             Stage stage = new Stage();

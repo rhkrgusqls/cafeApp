@@ -60,6 +60,13 @@ public class TotalItemListController implements Initializable {
         colLimitQty.setCellValueFactory(new PropertyValueFactory<>("limitQuantity"));
         colWithinLimit.setCellValueFactory(new PropertyValueFactory<>("withinLimit"));
 
+        tableView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && tableView.getSelectionModel().getSelectedItem() != null) {
+                ItemLimitViewDTO selected = tableView.getSelectionModel().getSelectedItem();
+                openLimitEditDialog(selected.getItemId());
+            }
+        });
+
         colWithinLimit.setCellFactory(col -> new TableCell<>() {
             private final Button requestBtn = new Button("요청");
 
@@ -270,5 +277,60 @@ public class TotalItemListController implements Initializable {
                 });
             }
         }).start();
+    }
+    private void openLimitEditDialog(int itemId) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("제한 수량 설정");
+        dialog.setHeaderText("아이템 ID: " + itemId);
+        dialog.setContentText("새 제한 수량을 입력하세요:");
+
+        dialog.showAndWait().ifPresent(input -> {
+            try {
+                int quantity = Integer.parseInt(input);
+                updateItemLimit(itemId, quantity);
+            } catch (NumberFormatException e) {
+                new Alert(Alert.AlertType.ERROR, "유효한 숫자를 입력하세요.").showAndWait();
+            }
+        });
+    }
+
+    private void updateItemLimit(int itemId, int quantity) {
+        new Thread(() -> {
+            try {
+                String urlStr = String.format("http://%s:%s/itemStock/alarm/update?itemId=%d&quantity=%d",
+                        ConfigLoader.getIp(), ConfigLoader.getPort(), itemId, quantity);
+                URL url = new URL(urlStr);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
+
+                int responseCode = conn.getResponseCode();
+                if (responseCode == 200) {
+                    boolean success = new ObjectMapper().readValue(conn.getInputStream(), Boolean.class);
+                    Platform.runLater(() -> {
+                        if (success) {
+                            showAlert("성공", "제한 수량이 성공적으로 수정되었습니다.");
+                            loadItemList(); // 테이블 갱신
+                        } else {
+                            showAlert("실패", "제한 수량 수정 실패.");
+                        }
+                    });
+                } else {
+                    Platform.runLater(() -> showAlert("오류", "서버 오류: " + responseCode));
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Platform.runLater(() -> showAlert("예외 발생", e.getMessage()));
+            }
+        }).start();
+    }
+
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }

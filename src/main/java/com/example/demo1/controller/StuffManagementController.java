@@ -54,6 +54,12 @@ public class StuffManagementController implements Initializable {
     private String loginAffiliationCode;    // 로그인한 사용자
     private String viewAffiliationCode;     // 조회 대상 분점
 
+    // 전체 조회 모드 설정(필터링 용)
+    private boolean viewingAllStock = false;
+    public void setViewingAllStock(boolean viewingAllStock) {
+        this.viewingAllStock = viewingAllStock;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         colNumber.setCellValueFactory(new PropertyValueFactory<>("stockId"));
@@ -74,10 +80,22 @@ public class StuffManagementController implements Initializable {
         MenuItem defectiveItem = new MenuItem("Defective");
         MenuItem depletedItem = new MenuItem("Depleted");
 
-        allItem.setOnAction(e -> loadStuffListWithState(null));
-        availableItem.setOnAction(e -> loadStuffListWithState("available"));
-        defectiveItem.setOnAction(e -> loadStuffListWithState("defective"));
-        depletedItem.setOnAction(e -> loadStuffListWithState("depleted"));
+        allItem.setOnAction(e -> {
+            if (viewingAllStock) loadAllStuffListWithState(null);
+            else loadStuffListWithState(null);
+        });
+        availableItem.setOnAction(e -> {
+            if (viewingAllStock) loadAllStuffListWithState("available");
+            else loadStuffListWithState("available");
+        });
+        defectiveItem.setOnAction(e -> {
+            if (viewingAllStock) loadAllStuffListWithState("defective");
+            else loadStuffListWithState("defective");
+        });
+        depletedItem.setOnAction(e -> {
+            if (viewingAllStock) loadAllStuffListWithState("depleted");
+            else loadStuffListWithState("depleted");
+        });
 
         statusFilterMenu.getItems().addAll(allItem, availableItem, defectiveItem, depletedItem);
 
@@ -356,6 +374,34 @@ public class StuffManagementController implements Initializable {
                 Platform.runLater(() ->
                         stuffTable.setPlaceholder(new Label("전체 조회 실패"))
                 );
+            }
+        }).start();
+    }
+
+    private void loadAllStuffListWithState(String state) {
+        new Thread(() -> {
+            try {
+                String query = (state != null && !state.isEmpty()) ? "?state=" + state : "";
+                URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/itemStock/listAll" + query);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
+                conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
+
+                String jsonBody = String.format("{\"affiliationCode\":\"%s\"}", viewAffiliationCode);
+                try (java.io.OutputStream os = conn.getOutputStream()) {
+                    os.write(jsonBody.getBytes("utf-8"));
+                }
+
+                if (conn.getResponseCode() == 200) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    StuffDTO[] items = mapper.readValue(conn.getInputStream(), StuffDTO[].class);
+                    Platform.runLater(() -> stuffTable.getItems().setAll(items));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }).start();
     }
