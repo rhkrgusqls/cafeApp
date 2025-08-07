@@ -8,7 +8,8 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="461.0" prefWidth="466.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.controller.ItemlistController">
+<AnchorPane prefHeight="461.0" prefWidth="466.0" xmlns="http://javafx.com/javafx/17.0.6"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.controller.ItemlistController">
    <children>
       <Circle fill="#ffe52194" layoutX="68.0" layoutY="76.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
       <Circle fill="#fbff2194" layoutX="115.0" layoutY="3.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
@@ -23,7 +24,7 @@
             <TableColumn fx:id="colItemID" prefWidth="47.0" resizable="false" text="ItemID" />
             <TableColumn fx:id="colName" prefWidth="181.0" resizable="false" text="Name" />
             <TableColumn fx:id="colCategory" prefWidth="94.0" resizable="false" text="Category" />
-            <TableColumn fx:id="colState" prefWidth="93.0" resizable="false" text="State" />
+            <TableColumn fx:id="colState" prefWidth="93.0" resizable="false" />
         </columns>
       </TableView>
       <Button fx:id="addBtn" layoutX="388.0" layoutY="22.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="53.0" text="Add" visible="false" />

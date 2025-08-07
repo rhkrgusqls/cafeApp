@@ -24,9 +24,10 @@
          <children>
             <TableView fx:id="storeTable" layoutX="8.0" layoutY="7.0" prefHeight="360.0" prefWidth="356.0">
                <columns>
-                  <TableColumn fx:id="colAffiliationCode" prefWidth="94.0" text="AffiliationCode" />
-                  <TableColumn fx:id="colStoreName" prefWidth="104.0" text="StoreName" />
-                  <TableColumn fx:id="colMode" prefWidth="157.0" text="Mode" />
+                  <TableColumn fx:id="colAffiliationCode" prefWidth="66.0" resizable="false" text="가게 코드" />
+                  <TableColumn fx:id="colStoreName" prefWidth="115.0" resizable="false" text="가게 이름" />
+                  <TableColumn fx:id="colMode" prefWidth="135.0" resizable="false" text="조작 옵션" />
+                  <TableColumn fx:id="colAlarm" minWidth="1.0" prefWidth="39.0" resizable="false" text="요청" />
                </columns>
             </TableView>
 
@@ -59,7 +60,8 @@
       </AnchorPane>
 
       <Button layoutX="779.0" layoutY="14.0" mnemonicParsing="false" onAction="#onLogout" text="로그아웃" />
-      <Button fx:id="itemsBtn" layoutX="708.0" layoutY="14.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="65.0" text="물품메뉴" />
-      <Button fx:id="priStockBtn" layoutX="636.0" layoutY="14.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="65.0" text="본점재고" />
+      <Button fx:id="itemsBtn" layoutX="708.0" layoutY="14.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="65.0" text="메뉴수정" />
+      <Button fx:id="priStockBtn" layoutX="636.0" layoutY="14.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="65.0" text="재고추가" />
+      <Button fx:id="priItemStockBtn" layoutX="564.0" layoutY="14.0" mnemonicParsing="false" onAction="#onPriItemStockBtn" text="본점재고" />
    </children>
 </AnchorPane>

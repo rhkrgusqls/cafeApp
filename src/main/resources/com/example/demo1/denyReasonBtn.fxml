@@ -4,7 +4,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 
-<AnchorPane prefHeight="0.0" prefWidth="0.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.controller.DenyReasonBtnController">
+<AnchorPane prefHeight="0.0" prefWidth="0.0" xmlns="http://javafx.com/javafx/17.0.6"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.controller.DenyReasonBtnController">
    <children>
       <Button fx:id="dReasonBtn" mnemonicParsing="false" text="거부사유" />
    </children>

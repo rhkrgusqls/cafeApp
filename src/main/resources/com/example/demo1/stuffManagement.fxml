@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="538.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.controller.StuffManagementController">
+<AnchorPane prefHeight="538.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/17.0.6" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.controller.StuffManagementController">
    <children>
       <Circle fill="#ffe52194" layoutX="61.0" layoutY="61.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
       <Circle fill="#fbff2194" layoutX="108.0" layoutY="-12.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
@@ -44,5 +44,6 @@
       </Text>
       <Button fx:id="requestBtn" layoutX="704.0" layoutY="19.0" mnemonicParsing="false" onAction="#onRequestBtn" text="재고 요청" />
       <Button fx:id="historyBtn" layoutX="627.0" layoutY="19.0" mnemonicParsing="false" onAction="#onHistoryBtn" prefHeight="22.0" prefWidth="68.0" text="재고 기록" />
+      <Button fx:id="stockBtn" layoutX="550.0" layoutY="19.0" mnemonicParsing="false" onAction="#onStockBtn" text="전체 재고" />
    </children>
 </AnchorPane>

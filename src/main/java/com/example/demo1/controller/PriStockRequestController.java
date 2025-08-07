@@ -24,10 +24,16 @@ public class PriStockRequestController {
 
     private int itemId; // 아이템 ID 전달받음
 
+    private Stage parentStage;
+
     public void setItemId(int itemId) {
         this.itemId = itemId;
         itemIdField.setText(String.valueOf(itemId));
         itemIdField.setEditable(false); // 고정
+    }
+
+    public void setParentStage(Stage parentStage) {
+        this.parentStage = parentStage;
     }
 
     @FXML
@@ -81,6 +87,10 @@ public class PriStockRequestController {
             // 성공 시 창 닫기
             if (responseCode == 200) {
                 closeWindow();
+
+                if (parentStage != null) {
+                    parentStage.close(); // 전체 재고 창 닫기
+                }
             }
 
         } catch (NumberFormatException e) {

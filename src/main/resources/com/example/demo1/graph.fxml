@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<AnchorPane prefHeight="601.0" prefWidth="863.0" xmlns="http://javafx.com/javafx/17.0.6" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.controller.GraphController">
+   <children>
+      <Circle fill="#ffe52194" layoutX="68.0" layoutY="74.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
+      <Circle fill="#fbff2194" layoutX="115.0" layoutY="1.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
+      <Circle fill="#ffe12197" layoutX="-12.0" layoutY="114.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
+      <Text layoutX="8.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Item Graph">
+         <font>
+            <Font name="Freestyle Script" size="52.0" />
+         </font>
+      </Text>
+      <LineChart fx:id="lineChartOut" layoutX="23.0" layoutY="62.0" prefHeight="246.0" prefWidth="397.0">
+        <xAxis>
+          <CategoryAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </LineChart>
+      <LineChart fx:id="lineChartFlow" layoutX="23.0" layoutY="328.0" prefHeight="246.0" prefWidth="397.0">
+         <xAxis>
+            <CategoryAxis side="BOTTOM" />
+         </xAxis>
+         <yAxis>
+            <NumberAxis side="LEFT" />
+         </yAxis>
+      </LineChart>
+      <BarChart fx:id="barChart" layoutX="446.0" layoutY="62.0" prefHeight="246.0" prefWidth="397.0">
+        <xAxis>
+          <CategoryAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </BarChart>
+      <PieChart fx:id="pieChart" layoutX="446.0" layoutY="328.0" prefHeight="246.0" prefWidth="397.0" />
+      <Text layoutX="23.0" layoutY="310.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Shipment Chart" wrappingWidth="150.236328125">
+         <font>
+            <Font name="Comic Sans MS" size="20.0" />
+         </font>
+      </Text>
+      <Text layoutX="446.0" layoutY="310.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Usage Chart" wrappingWidth="150.236328125">
+         <font>
+            <Font name="Comic Sans MS" size="20.0" />
+         </font>
+      </Text>
+      <Text layoutX="14.0" layoutY="582.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stock Flow Chart" wrappingWidth="184.236328125">
+         <font>
+            <Font name="Comic Sans MS" size="20.0" />
+         </font>
+      </Text>
+      <Text layoutX="446.0" layoutY="582.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stock Usage Chart" wrappingWidth="184.236328125">
+         <font>
+            <Font name="Comic Sans MS" size="20.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>

@@ -2,10 +2,9 @@ package com.example.demo1.controller;
 
 import com.example.demo1.cell.ModeButtonCell;
 import com.example.demo1.controller.util.Cookie;
-import com.example.demo1.dto.AffiliationDTO;
-import com.example.demo1.dto.SignUpDTO;
-import com.example.demo1.dto.StoreDTO;
+import com.example.demo1.dto.*;
 import com.example.demo1.properties.ConfigLoader;
+import com.example.demo1.refresh.StoreManagementRefresh;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -18,6 +17,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -37,6 +37,7 @@ public class StoreManagementController implements Initializable {
     @FXML private TableColumn<StoreDTO, String> colAffiliationCode;
     @FXML private TableColumn<StoreDTO, String> colStoreName;
     @FXML private TableColumn<StoreDTO, Void> colMode;
+    @FXML private TableColumn<StoreDTO, String> colAlarm;
 
     @FXML private TextField affiliationCodeField;
     @FXML private TextField passwordField;
@@ -53,17 +54,43 @@ public class StoreManagementController implements Initializable {
         return stuffManagementController;
     }
 
-    private void initializeStuffManagementController() {
-        // stuffManagementController가 제대로 초기화되는지 확인
-        stuffManagementController = new StuffManagementController();
-    }
+//    private void initializeStuffManagementController() {
+//        // stuffManagementController가 제대로 초기화되는지 확인
+//        stuffManagementController = new StuffManagementController();
+//    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        StoreManagementRefresh.registerController(this);
         colAffiliationCode.setCellValueFactory(new PropertyValueFactory<>("affiliationCode"));
         colStoreName.setCellValueFactory(new PropertyValueFactory<>("storeName"));
 
+        StoreManagementRefresh.refresh();
+
         colMode.setCellFactory(param -> new ModeButtonCell(this));
+
+        colAlarm.setCellFactory(column -> new TableCell<StoreDTO, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || getIndex() >= getTableView().getItems().size()) {
+                    setGraphic(null);
+                    return;
+                }
+
+                StoreDTO dto = getTableView().getItems().get(getIndex());
+                String alarm = dto.getAlarmState();
+
+                if ("request".equals(alarm)) {
+                    Circle redDot = new Circle(5);
+                    redDot.setStyle("-fx-fill: red;");
+                    setGraphic(redDot);
+                } else {
+                    setGraphic(null);
+                }
+            }
+        });
 
         storeTable.setRowFactory(tv -> {
             TableRow<StoreDTO> row = new TableRow<>();
@@ -125,7 +152,7 @@ public class StoreManagementController implements Initializable {
         this.loginAffiliationCode = code;
     }
 
-    private void loadStoreList() {
+    public void loadStoreList() {
         new Thread(() -> {
             List<StoreDTO> storeList = fetchStoresFromApi();
             Platform.runLater(() -> {
@@ -159,15 +186,73 @@ public class StoreManagementController implements Initializable {
             conn.setRequestProperty("Accept", "application/json");
             conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
             InputStream is = conn.getInputStream();
+
+            // 빈 응답 확인
+            if (is.available() == 0) {
+                return List.of();  // 빈 리스트 반환
+            }
+
             ObjectMapper mapper = new ObjectMapper();
             AffiliationDTO response = mapper.readValue(is, AffiliationDTO.class);
-            return response.getAffiliationList();
+            List<StoreDTO> storeList = response.getAffiliationList();
+
+            // 점포별 주문 상태 확인 추가
+            for (StoreDTO store : storeList) {
+                String affiliationCode = store.getAffiliationCode();
+
+                try {
+                    URL orderUrl = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/ordering/display");
+                    HttpURLConnection orderConn = (HttpURLConnection) orderUrl.openConnection();
+                    orderConn.setRequestMethod("POST");
+                    orderConn.setRequestProperty("Content-Type", "application/json");
+                    orderConn.setRequestProperty("Cookie", Cookie.getSessionCookie());
+                    orderConn.setDoOutput(true);
+
+                    String requestBody = "{\"affiliationCode\":\"" + affiliationCode + "\"}";
+                    orderConn.getOutputStream().write(requestBody.getBytes("UTF-8"));
+
+                    if (orderConn.getResponseCode() == 200) {
+                        InputStream orderStream = orderConn.getInputStream();
+                        OrderDTO[] orders = mapper.readValue(orderStream, OrderDTO[].class);
+                        for (OrderDTO order : orders) {
+                            String state = order.getState();
+                            if ("wait".equalsIgnoreCase(state) || "re-review-needed".equalsIgnoreCase(state)) {
+                                store.setAlarmState("request");
+                                break; // 하나라도 있으면 표시
+                            }
+                        }
+                    }
+                } catch (Exception innerEx) {
+                    innerEx.printStackTrace();
+                    store.setAlarmState("error");
+                }
+            }
+            return storeList;
         } catch (Exception e) {
             e.printStackTrace();
-            Platform.runLater(() ->
-                    storeTable.setPlaceholder(new Label("데이터를 가져올 수 없습니다."))
-            );
+            Platform.runLater(() -> storeTable.setPlaceholder(new Label("데이터를 가져올 수 없습니다.")));
             return List.of();
+        }
+    }
+
+    @FXML
+    private void onPriItemStockBtn() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/totalItemList.fxml"));
+            Parent root = loader.load();
+
+            TotalItemListController controller = loader.getController();
+            controller.setLoginAffiliationCode("101"); // 본점 로그인 기준 전달
+
+            Stage stage = new Stage();
+            stage.setTitle("전체 재고 보기 (본점)");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.centerOnScreen();
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -257,7 +342,7 @@ public class StoreManagementController implements Initializable {
 
             RequestlistController controller = loader.getController();
 
-            // FXML 주입 완료 이후 실행되도록 보장
+            // FXML 로딩 완료 이후 실행되도록 보장
             Platform.runLater(() -> controller.setAffiliationCode(affiliationCode));
 
             Stage stage = new Stage();
@@ -265,6 +350,7 @@ public class StoreManagementController implements Initializable {
             stage.setScene(new Scene(root));
             stage.setResizable(false);
             stage.centerOnScreen();
+            stage.setOnHidden(e -> loadStoreList());
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -275,8 +361,10 @@ public class StoreManagementController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/stuffManagement.fxml"));
             Parent root = loader.load();
-
             StuffManagementController controller = loader.getController();
+
+            controller.setAffiliationContext(ConfigLoader.getManagerCode(), ConfigLoader.getManagerCode());
+            controller.setViewingAllStock(true);
             controller.loadAllStock(); // 전체 조회 메서드 호출
 
             Stage stage = new Stage();

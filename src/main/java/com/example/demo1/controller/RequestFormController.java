@@ -20,7 +20,9 @@ public class RequestFormController {
     @FXML private TextField QuantityField;
     @FXML private Button submitBtn;
 
-    private String loginAffiliationCode; // 외부에서 주입
+    private String loginAffiliationCode;
+    // 외부에서 주입
+    private Stage parentStage;
 
     public void setItemId(int itemId) {
         itemIdField.setText(String.valueOf(itemId));
@@ -35,6 +37,10 @@ public class RequestFormController {
     public void setLoginAffiliationCode(String loginAffiliationCode) {
         this.loginAffiliationCode = loginAffiliationCode;
         System.out.println("loginAffiliationCode: " + loginAffiliationCode);
+    }
+
+    public void setParentStage(Stage parentStage) {
+        this.parentStage = parentStage;
     }
 
     private void sendRequest() {
@@ -63,6 +69,9 @@ public class RequestFormController {
             if (responseCode == 200) {
                 showAlert("요청 완료", "재고 요청이 성공적으로 처리되었습니다.");
                 closeWindow();
+                if (parentStage != null) {
+                    parentStage.close(); // 전체 재고 창 닫기
+                }
             } else {
                 showAlert("요청 실패", "서버 응답 코드: " + responseCode);
             }

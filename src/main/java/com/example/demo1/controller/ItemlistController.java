@@ -4,6 +4,7 @@ import com.example.demo1.controller.util.Cookie;
 import com.example.demo1.dto.ItemDTO;
 
 import com.example.demo1.properties.ConfigLoader;
+import com.example.demo1.refresh.ItemListRefresh;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -22,6 +23,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 
@@ -40,6 +43,8 @@ public class ItemlistController implements Initializable {
     private String loginAffiliationCode;
     private boolean priStockMode = false;
 
+    private ObservableList<ItemDTO> originalData = FXCollections.observableArrayList();
+
     public void setLoginAffiliationCode(String loginAffiliationCode) {
     //    this.requestMode = true; // 요청 모드 켜기
         this.loginAffiliationCode = loginAffiliationCode;
@@ -53,10 +58,24 @@ public class ItemlistController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        ItemListRefresh.registerController(this);
         colItemID.setCellValueFactory(new PropertyValueFactory<>("itemId"));
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
         colState.setCellValueFactory(new PropertyValueFactory<>("state"));
+        colState.setSortable(false);
+        ItemListRefresh.refresh();
+        // 필터 메뉴
+        ContextMenu filterMenu = new ContextMenu();
+        String[] states = {"전체", "available", "unavailable"};
+        for (String state : states) {
+            MenuItem menuItem = new MenuItem(state);
+            menuItem.setOnAction(e -> filterByState(state.equals("전체") ? null : state));
+            filterMenu.getItems().add(menuItem);
+        }
+        Label stateHeader = new Label("State ▼");
+        stateHeader.setOnMouseClicked(e -> filterMenu.show(stateHeader, e.getScreenX(), e.getScreenY()));
+        colState.setGraphic(stateHeader);
 
         tableView.setRowFactory(tv -> {
             TableRow<ItemDTO> row = new TableRow<>();
@@ -102,6 +121,17 @@ public class ItemlistController implements Initializable {
 
         addBtn.setOnAction(e -> openItemInfo());
         loadItemList();
+    }
+
+    private void filterByState(String state) {
+        if (state == null) { // 전체 보기
+            tableView.setItems(FXCollections.observableArrayList(originalData));
+        } else {
+            ObservableList<ItemDTO> filtered = originalData.filtered(
+                    item -> state.equalsIgnoreCase(item.getState())
+            );
+            tableView.setItems(FXCollections.observableArrayList(filtered));
+        }
     }
 
     private void showConfirmAndChangeState(int itemId, String newState) {
@@ -206,7 +236,7 @@ public class ItemlistController implements Initializable {
         }
     }
 
-    protected void loadItemList() {
+    public void loadItemList() {
         new Thread(() -> {
             try {
                 URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/items/list");
@@ -217,12 +247,28 @@ public class ItemlistController implements Initializable {
                 int responseCode = conn.getResponseCode();
                 if (responseCode == 200) {
                     InputStream is = conn.getInputStream();
+
+                    if (is.available() == 0) {
+                        Platform.runLater(() -> {
+                            originalData.clear();
+                            tableView.setItems(FXCollections.observableArrayList());
+                            tableView.setPlaceholder(new Label("불러올 데이터가 없습니다."));
+                        });
+                        return;
+                    }
+
                     ObjectMapper mapper = new ObjectMapper();
                     ItemDTO[] items = mapper.readValue(is, ItemDTO[].class);
 
+                    // 초기에 아이템 리스트 조회시 available만 보이도록 설정
+                    List<ItemDTO> allItems = Arrays.asList(items); // 전체 데이터
+                    List<ItemDTO> availableItems = allItems.stream()
+                            .filter(item -> "available".equalsIgnoreCase(item.getState()))
+                            .toList();
+
                     Platform.runLater(() -> {
-                        ObservableList<ItemDTO> data = FXCollections.observableArrayList(items);
-                        tableView.setItems(data);
+                        originalData.setAll(allItems); // 원본은 전체 저장
+                        tableView.setItems(FXCollections.observableArrayList(availableItems)); // 화면엔 available만 표시
                     });
                 } else {
                     Platform.runLater(() -> {

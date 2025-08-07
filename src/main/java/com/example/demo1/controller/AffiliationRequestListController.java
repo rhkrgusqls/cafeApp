@@ -3,6 +3,7 @@ package com.example.demo1.controller;
 import com.example.demo1.controller.util.Cookie;
 import com.example.demo1.dto.HistoryDTO;
 import com.example.demo1.properties.ConfigLoader;
+import com.example.demo1.refresh.AffiliationRequestListRefresh;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -19,7 +20,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class AffiliationLogController {
+public class AffiliationRequestListController {
 
     @FXML private TableView<HistoryDTO> historyTable;
     @FXML private TableColumn<HistoryDTO, Integer> orderIdColumn;
@@ -36,18 +37,20 @@ public class AffiliationLogController {
 
     @FXML
     public void initialize() {
+        AffiliationRequestListRefresh.registerController(this); // 새로고침을 위해 등록
         orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
         itemIdColumn.setCellValueFactory(new PropertyValueFactory<>("itemId"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         stateColumn.setCellValueFactory(new PropertyValueFactory<>("state"));
         orderDateColumn.setCellValueFactory(new PropertyValueFactory<>("orderDate"));
 
+        AffiliationRequestListRefresh.refresh(); // 새로 고침 확인
         // 정렬 비활성화
         stateColumn.setSortable(false);
 
         // 상태 필터 메뉴
         ContextMenu filterMenu = new ContextMenu();
-        String[] states = {"전체", "completed", "dismissed", "processed", "re-review-needed"};
+        String[] states = {"전체", "wait", "completed", "dismissed", "processed", "re-review-needed"};
         for (String state : states) {
             MenuItem menuItem = new MenuItem(state);
             menuItem.setOnAction(e -> filterByState(state.equals("전체") ? null : state));
@@ -105,7 +108,7 @@ public class AffiliationLogController {
         loadStockHistory();
     }
 
-    private void loadStockHistory() {
+    public void loadStockHistory() {
         new Thread(() -> {
             try {
                 URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/ordering/display");
@@ -125,14 +128,17 @@ public class AffiliationLogController {
                 int responseCode = conn.getResponseCode();
                 if (responseCode == 200) {
                     InputStream is = conn.getInputStream();
+
+                    // 새로고침 시 json이 비었으므로 이예 대한 조건 처리
+                    if (is.available() == 0) { // 응답 내용 없음
+                        Platform.runLater(() -> historyTable.getItems().clear());
+                        return;
+                    }
                     ObjectMapper mapper = new ObjectMapper();
                     HistoryDTO[] stockHistories = mapper.readValue(is, HistoryDTO[].class);
-
-                    Platform.runLater(() -> {
-                        allHistory.setAll(stockHistories); // 전체 데이터 저장
-                        historyTable.setItems(allHistory);
-                    });
-                } else {
+                    Platform.runLater(() -> historyTable.setItems(FXCollections.observableArrayList(stockHistories)));
+                }
+                else {
                     Platform.runLater(() -> historyTable.setPlaceholder(new Label("서버 오류: " + responseCode)));
                 }
 

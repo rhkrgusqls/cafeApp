@@ -1,5 +1,6 @@
 package com.example.demo1.controller;
 
+import com.example.demo1.controller.util.RefreshAll;
 import com.example.demo1.dto.StuffDTO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -62,7 +63,7 @@ public class ModeBtnsUDController {
             stage.setResizable(false);
             stage.centerOnScreen();
             stage.show();
-
+            new RefreshAll();
         } catch (Exception e) {
             e.printStackTrace();
         }
