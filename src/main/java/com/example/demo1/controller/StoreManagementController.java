@@ -46,6 +46,8 @@ public class StoreManagementController implements Initializable {
     @FXML private Button priStockBtn;
     @FXML private Button itemsBtn;
 
+    @FXML private Button shipmentBtn;
+
     private String loginAffiliationCode;
 
     private StuffManagementController stuffManagementController;
@@ -136,6 +138,22 @@ public class StoreManagementController implements Initializable {
 
                 Stage stage = new Stage();
                 stage.setTitle("아이템 목록");
+                stage.setScene(new Scene(root));
+                stage.setResizable(false);
+                stage.centerOnScreen();
+                stage.show();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        shipmentBtn.setOnAction(e -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/graphs/shipmentGraph.fxml"));
+                Parent root = loader.load();
+
+                Stage stage = new Stage();
+                stage.setTitle("출고량 그래프");
                 stage.setScene(new Scene(root));
                 stage.setResizable(false);
                 stage.centerOnScreen();
