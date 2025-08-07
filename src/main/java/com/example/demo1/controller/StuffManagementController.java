@@ -1,6 +1,7 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.controller.util.Cookie;
+import com.example.demo1.dto.OrderDTO;
 import com.example.demo1.dto.StuffDTO;
 import com.example.demo1.properties.ConfigLoader;
 import com.example.demo1.refresh.AffiliationRequestListRefresh;
@@ -21,6 +22,7 @@ import javafx.stage.Window;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -189,7 +191,11 @@ public class StuffManagementController implements Initializable {
 
         this.affiliationNum.setText(viewAffiliationCode);
 
-        if ((ConfigLoader.getManagerCode().equals(loginCode) && !loginCode.equals(viewCode)) || loginCode.equals(ConfigLoader.getManagerCode())) { // 101일때 직접 물품추가하는 프론트가 필요
+        if (!"101".equals(loginAffiliationCode)) { // 분점 로그인 시 확인 필요한 요청 있는 지 확인
+            checkProcessedRequests(loginAffiliationCode);
+        }
+
+        if ((ConfigLoader.getManagerCode().equals(loginCode) && !loginCode.equals(viewCode)) || loginCode.equals(ConfigLoader.getManagerCode())) {
             logoutBtn.setVisible(false);
             requestBtn.setVisible(false);
             historyBtn.setVisible(false);
@@ -200,8 +206,50 @@ public class StuffManagementController implements Initializable {
             historyBtn.setVisible(true);
             logoutBtn.setManaged(true);
         }
-
         loadStuffList();
+    }
+
+    private void checkProcessedRequests(String affiliationCode) { // 로그인 시 확인할 요청이 있는 지 확인
+        new Thread(() -> {
+            try {
+                URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/ordering/display");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
+                conn.setDoOutput(true);
+
+                String json = String.format("{\"affiliationCode\":\"%s\"}", affiliationCode);
+                try (OutputStream os = conn.getOutputStream()) {
+                    byte[] input = json.getBytes("utf-8");
+                    os.write(input, 0, input.length);
+                }
+
+                InputStream is = conn.getInputStream();
+                ObjectMapper mapper = new ObjectMapper();
+                OrderDTO[] orders = mapper.readValue(is, OrderDTO[].class);
+
+                boolean hasProcessed = false;
+                for (OrderDTO order : orders) {
+                    if ("processed".equalsIgnoreCase(order.getState())) {
+                        hasProcessed = true;
+                        break;
+                    }
+                }
+                if (hasProcessed) {
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("요청 확인 알림");
+                        alert.setHeaderText(null);
+                        alert.setContentText("진행 중인 요청이 있습니다.\n확인해주세요.");
+                        alert.showAndWait();
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     public void loadStuffList() {
