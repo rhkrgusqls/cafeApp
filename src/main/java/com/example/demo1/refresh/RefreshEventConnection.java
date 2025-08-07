@@ -64,6 +64,7 @@ public class RefreshEventConnection implements RefreshObserver {
                     break;
                 case "itemList":
                     ItemListRefresh.refresh();
+                    StoreManagementRefresh.refresh();
                     break;
                 case "affiliationRequestList":
                     AffiliationRequestListRefresh.refresh();

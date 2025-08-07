@@ -81,7 +81,7 @@ public class LoginController {
                     // WebSocket 연결 시도 추가
                     try {
                         RefreshEventConnection refreshConnection = new RefreshEventConnection();
-                        refreshConnection.connect("ws://localhost:8080/refresh", "102");
+                        refreshConnection.connect("ws://localhost:8080/refresh", affiliationCode);
                         // 필요 시 컨트롤러나 앱 전역에 refreshConnection 참조 저장 가능
                     } catch (Exception e) {
                         e.printStackTrace();
