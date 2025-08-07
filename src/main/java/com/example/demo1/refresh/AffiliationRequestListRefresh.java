@@ -15,7 +15,7 @@ public class AffiliationRequestListRefresh {
     public static void refresh() {
         if (controller != null) {
             controller.loadStockHistory(); // 실제 새로고침 메서드 호출
-            System.out.println("affiliationRequestListRefresh refresh"); // 디버깅용
+            //System.out.println("affiliationRequestListRefresh refresh"); // 디버깅용
         }
     }
 }

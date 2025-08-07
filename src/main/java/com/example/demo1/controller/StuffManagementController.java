@@ -47,6 +47,8 @@ public class StuffManagementController implements Initializable {
     @FXML private Button logoutBtn;
     @FXML private Button requestBtn;
     @FXML private Button historyBtn;
+    @FXML private Button stockBtn;
+
     @FXML private Text affiliationNum;
 
     private String loginAffiliationCode;    // 로그인한 사용자
@@ -199,11 +201,13 @@ public class StuffManagementController implements Initializable {
             logoutBtn.setVisible(false);
             requestBtn.setVisible(false);
             historyBtn.setVisible(false);
+            stockBtn.setVisible(false);
             logoutBtn.setManaged(false);
         } else {
             logoutBtn.setVisible(true);
             requestBtn.setVisible(true);
             historyBtn.setVisible(true);
+            stockBtn.setVisible(true);
             logoutBtn.setManaged(true);
         }
         loadStuffList();
@@ -319,7 +323,6 @@ public class StuffManagementController implements Initializable {
         }).start();
     }
 
-
     public void loadAllStock() {
         new Thread(() -> {
             try {
@@ -333,6 +336,7 @@ public class StuffManagementController implements Initializable {
                 logoutBtn.setVisible(false);
                 requestBtn.setVisible(false);
                 historyBtn.setVisible(false);
+                stockBtn.setVisible(false);
 
                 int responseCode = conn.getResponseCode();
                 if (responseCode == 200) {
@@ -354,6 +358,23 @@ public class StuffManagementController implements Initializable {
                 );
             }
         }).start();
+    }
+
+    @FXML
+    private void onStockBtn() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/totalItemList.fxml"));
+            Parent history = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("전체 재고");
+            stage.setScene(new Scene(history));
+            stage.setResizable(false);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
