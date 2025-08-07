@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="409.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/17.0.6" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.controller.TotalItemListController">
+<AnchorPane prefHeight="409.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.controller.TotalItemListController">
    <children>
       <Circle fill="#ffe52194" layoutX="66.0" layoutY="60.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
       <Circle fill="#fbff2194" layoutX="113.0" layoutY="-13.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
@@ -24,8 +24,13 @@
             <TableColumn fx:id="colCategory" minWidth="0.0" prefWidth="79.0" resizable="false" text="카테고리" />
             <TableColumn fx:id="colRealQty" prefWidth="57.0" resizable="false" text="보유수량" />
             <TableColumn fx:id="colLimitQty" prefWidth="62.0" resizable="false" text="최소수량" />
-            <TableColumn  fx:id="colWithinLimit" prefWidth="52.0" resizable="false" text="요청필요" />
+            <TableColumn fx:id="colWithinLimit" prefWidth="52.0" resizable="false" text="요청필요" />
         </columns>
       </TableView>
+      <Text layoutX="27.0" layoutY="400.0" strokeType="OUTSIDE" strokeWidth="0.0" text="※더블 클릭 시 제한 수량을 수정할 수 있습니다.">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

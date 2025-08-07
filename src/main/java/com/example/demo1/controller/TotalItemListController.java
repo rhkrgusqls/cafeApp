@@ -120,18 +120,34 @@ public class TotalItemListController implements Initializable {
 
     private void openRequestForm(int itemId) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/requestForm.fxml"));
-            Parent root = loader.load();
+            FXMLLoader loader;
+            Parent root;
+            Stage currentStage = (Stage) tableView.getScene().getWindow(); // 현재 전체재고 창
 
-            RequestFormController controller = loader.getController();
-            controller.setItemId(itemId);
-            controller.setLoginAffiliationCode(loginAffiliationCode); // 소속 코드 주입
+            if ("101".equals(loginAffiliationCode)) {
+                loader = new FXMLLoader(getClass().getResource("/com/example/demo1/priStockRequest.fxml"));
+                root = loader.load();
 
-            Stage stage = new Stage();
-            stage.setTitle("재고 요청");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
+                PriStockRequestController controller = loader.getController();
+                controller.setItemId(itemId);
+                controller.setParentStage(currentStage); // 부모 창 전달
+
+            } else {
+                loader = new FXMLLoader(getClass().getResource("/com/example/demo1/requestForm.fxml"));
+                root = loader.load();
+
+                RequestFormController controller = loader.getController();
+                controller.setItemId(itemId);
+                controller.setLoginAffiliationCode(loginAffiliationCode);
+                controller.setParentStage(currentStage); // 부모 창 전달
+            }
+
+            Stage popupStage = new Stage();
+            popupStage.setTitle("재고 요청");
+            popupStage.setScene(new Scene(root));
+            popupStage.setResizable(false);
+            popupStage.centerOnScreen();
+            popupStage.show();
 
         } catch (Exception e) {
             e.printStackTrace();

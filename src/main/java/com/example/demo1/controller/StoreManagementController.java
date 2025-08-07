@@ -236,6 +236,27 @@ public class StoreManagementController implements Initializable {
     }
 
     @FXML
+    private void onPriItemStockBtn() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/totalItemList.fxml"));
+            Parent root = loader.load();
+
+            TotalItemListController controller = loader.getController();
+            controller.setLoginAffiliationCode("101"); // 본점 로그인 기준 전달
+
+            Stage stage = new Stage();
+            stage.setTitle("전체 재고 보기 (본점)");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.centerOnScreen();
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void onAddStore() {
         String code = affiliationCodeField.getText().trim();
         String password = passwordField.getText().trim();
