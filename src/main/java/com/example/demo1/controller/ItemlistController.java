@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 
@@ -258,9 +260,15 @@ public class ItemlistController implements Initializable {
                     ObjectMapper mapper = new ObjectMapper();
                     ItemDTO[] items = mapper.readValue(is, ItemDTO[].class);
 
+                    // 초기에 아이템 리스트 조회시 available만 보이도록 설정
+                    List<ItemDTO> allItems = Arrays.asList(items); // 전체 데이터
+                    List<ItemDTO> availableItems = allItems.stream()
+                            .filter(item -> "available".equalsIgnoreCase(item.getState()))
+                            .toList();
+
                     Platform.runLater(() -> {
-                        originalData.setAll(items); // 원본 리스트 저장
-                        tableView.setItems(FXCollections.observableArrayList(originalData)); // 테이블에 표시
+                        originalData.setAll(allItems); // 원본은 전체 저장
+                        tableView.setItems(FXCollections.observableArrayList(availableItems)); // 화면엔 available만 표시
                     });
                 } else {
                     Platform.runLater(() -> {
