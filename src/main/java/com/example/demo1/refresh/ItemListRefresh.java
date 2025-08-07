@@ -2,6 +2,7 @@ package com.example.demo1.refresh;
 
 import com.example.demo1.controller.ItemlistController;
 
+// 아이템 리스트 새로고침
 public class ItemListRefresh {
 
     private static ItemlistController controller;

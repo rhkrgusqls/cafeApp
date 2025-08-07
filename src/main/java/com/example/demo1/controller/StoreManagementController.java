@@ -4,6 +4,7 @@ import com.example.demo1.cell.ModeButtonCell;
 import com.example.demo1.controller.util.Cookie;
 import com.example.demo1.dto.*;
 import com.example.demo1.properties.ConfigLoader;
+import com.example.demo1.refresh.StoreManagementRefresh;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -53,15 +54,18 @@ public class StoreManagementController implements Initializable {
         return stuffManagementController;
     }
 
-    private void initializeStuffManagementController() {
-        // stuffManagementController가 제대로 초기화되는지 확인
-        stuffManagementController = new StuffManagementController();
-    }
+//    private void initializeStuffManagementController() {
+//        // stuffManagementController가 제대로 초기화되는지 확인
+//        stuffManagementController = new StuffManagementController();
+//    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        StoreManagementRefresh.registerController(this);
         colAffiliationCode.setCellValueFactory(new PropertyValueFactory<>("affiliationCode"));
         colStoreName.setCellValueFactory(new PropertyValueFactory<>("storeName"));
+
+        StoreManagementRefresh.refresh();
 
         colMode.setCellFactory(param -> new ModeButtonCell(this));
 
@@ -182,6 +186,12 @@ public class StoreManagementController implements Initializable {
             conn.setRequestProperty("Accept", "application/json");
             conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
             InputStream is = conn.getInputStream();
+
+            // 빈 응답 확인
+            if (is.available() == 0) {
+                return List.of();  // 빈 리스트 반환
+            }
+
             ObjectMapper mapper = new ObjectMapper();
             AffiliationDTO response = mapper.readValue(is, AffiliationDTO.class);
             List<StoreDTO> storeList = response.getAffiliationList();

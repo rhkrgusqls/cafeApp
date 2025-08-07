@@ -3,6 +3,7 @@ package com.example.demo1.controller;
 import com.example.demo1.controller.util.Cookie;
 import com.example.demo1.dto.OrderDTO;
 import com.example.demo1.properties.ConfigLoader;
+import com.example.demo1.refresh.RequestListRefresh;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -54,6 +55,16 @@ public class RequestlistController implements Initializable {
                 conn.getOutputStream().write(json.getBytes("utf-8"));
 
                 InputStream is = conn.getInputStream();
+
+                // 응답 본문이 비어있는 경우 처리
+                if (is.available() == 0) {
+                    Platform.runLater(() -> {
+                        allOrders.clear();
+                        tableView.setPlaceholder(new Label("표시할 주문이 없습니다."));
+                    });
+                    return;
+                }
+
                 ObjectMapper mapper = new ObjectMapper();
                 OrderDTO[] orders = mapper.readValue(is, OrderDTO[].class);
 
@@ -71,6 +82,7 @@ public class RequestlistController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        RequestListRefresh.registerController(this);
         orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
         itemIdColumn.setCellValueFactory(new PropertyValueFactory<>("itemId"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
@@ -78,6 +90,7 @@ public class RequestlistController implements Initializable {
         stateColumn.setCellValueFactory(new PropertyValueFactory<>("state"));
         orderDateColumn.setCellValueFactory(new PropertyValueFactory<>("orderDate"));
 
+        RequestListRefresh.refresh();
         stateColumn.setSortable(false);
 
         //필터 메뉴 생성(State)

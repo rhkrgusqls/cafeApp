@@ -4,6 +4,7 @@ import com.example.demo1.controller.util.Cookie;
 import com.example.demo1.dto.ItemDTO;
 
 import com.example.demo1.properties.ConfigLoader;
+import com.example.demo1.refresh.ItemListRefresh;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -55,11 +56,13 @@ public class ItemlistController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        ItemListRefresh.registerController(this);
         colItemID.setCellValueFactory(new PropertyValueFactory<>("itemId"));
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
         colState.setCellValueFactory(new PropertyValueFactory<>("state"));
         colState.setSortable(false);
+        ItemListRefresh.refresh();
         // 필터 메뉴
         ContextMenu filterMenu = new ContextMenu();
         String[] states = {"전체", "available", "unavailable"};
@@ -242,6 +245,16 @@ public class ItemlistController implements Initializable {
                 int responseCode = conn.getResponseCode();
                 if (responseCode == 200) {
                     InputStream is = conn.getInputStream();
+
+                    if (is.available() == 0) {
+                        Platform.runLater(() -> {
+                            originalData.clear();
+                            tableView.setItems(FXCollections.observableArrayList());
+                            tableView.setPlaceholder(new Label("불러올 데이터가 없습니다."));
+                        });
+                        return;
+                    }
+
                     ObjectMapper mapper = new ObjectMapper();
                     ItemDTO[] items = mapper.readValue(is, ItemDTO[].class);
 

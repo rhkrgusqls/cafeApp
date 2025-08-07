@@ -2,6 +2,7 @@ package com.example.demo1.refresh;
 
 import com.example.demo1.controller.RequestlistController;
 
+// 본점에 있는 요청사항 리스트 새로고침
 public class RequestListRefresh {
 
     private static RequestlistController controller;

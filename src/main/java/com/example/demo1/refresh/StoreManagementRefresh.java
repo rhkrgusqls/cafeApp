@@ -2,6 +2,7 @@ package com.example.demo1.refresh;
 
 import com.example.demo1.controller.StoreManagementController;
 
+// 가게 관리 페이지(관리자) 새로고침
 public class StoreManagementRefresh {
 
     private static StoreManagementController controller;

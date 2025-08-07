@@ -2,6 +2,7 @@ package com.example.demo1.refresh;
 
 import com.example.demo1.controller.AffiliationRequestListController;
 
+// 분점용 요청 리스트 새로고침
 public class AffiliationRequestListRefresh {
 
     private static AffiliationRequestListController controller;
