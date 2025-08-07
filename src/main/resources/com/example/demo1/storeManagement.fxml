@@ -9,8 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="538.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/17.0.6"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.controller.StoreManagementController">
+<AnchorPane prefHeight="538.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/17.0.6" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.controller.StoreManagementController">
    <children>
       <Circle fill="#ffe52194" layoutX="61.0" layoutY="61.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
       <Circle fill="#fbff2194" layoutX="108.0" layoutY="-12.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
@@ -25,9 +24,10 @@
          <children>
             <TableView fx:id="storeTable" layoutX="8.0" layoutY="7.0" prefHeight="360.0" prefWidth="356.0">
                <columns>
-                  <TableColumn fx:id="colAffiliationCode" prefWidth="94.0" text="AffiliationCode" />
-                  <TableColumn fx:id="colStoreName" prefWidth="104.0" text="StoreName" />
-                  <TableColumn fx:id="colMode" prefWidth="157.0" text="Mode" />
+                  <TableColumn fx:id="colAffiliationCode" prefWidth="66.0" resizable="false" text="가게 코드" />
+                  <TableColumn fx:id="colStoreName" prefWidth="115.0" resizable="false" text="가게 이름" />
+                  <TableColumn fx:id="colMode" prefWidth="135.0" resizable="false" text="조작 옵션" />
+                  <TableColumn fx:id="colAlarm" minWidth="1.0" prefWidth="39.0" resizable="false" text="요청" />
                </columns>
             </TableView>
 
