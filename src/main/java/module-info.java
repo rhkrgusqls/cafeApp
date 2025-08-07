@@ -2,6 +2,7 @@ module com.example.demo1 {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
+    requires tyrus.standalone.client;
 
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
@@ -24,6 +25,7 @@ module com.example.demo1 {
 
     opens com.example.demo1.dto to com.fasterxml.jackson.databind, javafx.base;
 
+    exports com.example.demo1.refresh to tyrus.standalone.client;
     exports com.example.demo1;
     exports com.example.demo1.controller;
     exports com.example.demo1.controller.util;

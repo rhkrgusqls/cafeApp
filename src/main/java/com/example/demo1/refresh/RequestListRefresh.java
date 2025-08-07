@@ -13,6 +13,7 @@ public class RequestListRefresh {
 
     // 새로고침 실행
     public static void refresh() {
+        System.out.println("Refreshing request list");
         if (controller != null) {
             controller.loadOrders();
         }

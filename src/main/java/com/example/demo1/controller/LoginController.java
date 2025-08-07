@@ -3,6 +3,7 @@ package com.example.demo1.controller;
 import com.example.demo1.controller.util.Cookie;
 import com.example.demo1.dto.LoginDTO;
 import com.example.demo1.properties.ConfigLoader;
+import com.example.demo1.refresh.RefreshEventConnection;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -77,12 +78,21 @@ public class LoginController {
                 showAlert(success ? "로그인 성공" : "로그인 실패", message);
 
                 if (success) {
+                    // WebSocket 연결 시도 추가
+                    try {
+                        RefreshEventConnection refreshConnection = new RefreshEventConnection();
+                        refreshConnection.connect("ws://localhost:8080/refresh", "101");
+                        // 필요 시 컨트롤러나 앱 전역에 refreshConnection 참조 저장 가능
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        showAlert("WebSocket 연결 실패", "실시간 새로고침 연결을 할 수 없습니다.");
+                    }
+
                     if (affiliationCode.equals(ConfigLoader.getManagerCode())) {
                         // 본점 로그인: storeManagement.fxml로 이동
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/storeManagement.fxml"));
                         Parent root = loader.load();
 
-                        // StoreManagementController가 로그인 지점 코드 기억하게 하기
                         StoreManagementController controller = loader.getController();
                         controller.setLoginAffiliationCode(ConfigLoader.getManagerCode());
 
@@ -96,7 +106,6 @@ public class LoginController {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/stuffManagement.fxml"));
                         Parent root = loader.load();
 
-                        // 로그인자와 조회 대상 모두 자신
                         StuffManagementController controller = loader.getController();
                         controller.setAffiliationContext(affiliationCode, affiliationCode);
 
@@ -107,6 +116,7 @@ public class LoginController {
                         stage.show();
                     }
                 }
+
             } else {
                 showAlert("오류", "서버 오류 발생: " + response.statusCode());
             }
