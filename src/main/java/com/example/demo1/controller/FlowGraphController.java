@@ -79,6 +79,7 @@ public class FlowGraphController {
 
                 HttpURLConnection conn = openGetConnection(api);
                 List<ItemChangeDTO> logs = mapper.readValue(conn.getInputStream(), new TypeReference<>() {});
+                Platform.runLater(() -> drawChart(new ArrayList<>()));
                 Platform.runLater(() -> drawChart(logs));
             } catch (Exception e) {
                 logError("Failed to fetch chart data", e);
@@ -95,7 +96,7 @@ public class FlowGraphController {
             menuItem.setOnAction(e -> {
                 selectedItemId = item.getItemId();
                 itemMenu.setText(item.getName());
-                fetchAndDrawChart();
+                initialize();
             });
             itemMenu.getItems().add(menuItem);
         }
@@ -108,7 +109,7 @@ public class FlowGraphController {
             menuItem.setOnAction(e -> {
                 selectedAffiliation = store.getAffiliationCode();
                 affiliationMenu.setText(store.getStoreName());
-                fetchAndDrawChart();
+                initialize();
             });
             affiliationMenu.getItems().add(menuItem);
         }

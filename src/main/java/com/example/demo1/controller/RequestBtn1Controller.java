@@ -74,7 +74,7 @@ public class RequestBtn1Controller {
                 conn.setDoOutput(true);
                 conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
 
-                String json = String.format("{\"affiliationCode\":\"%s\"}", 101); // 관리자 고정
+                String json = String.format("{\"affiliationCode\":\"%s\"}", ConfigLoader.getManagerCode()); // 관리자 고정
                 try (OutputStream os = conn.getOutputStream()) {
                     os.write(json.getBytes(StandardCharsets.UTF_8));
                 }

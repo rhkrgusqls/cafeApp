@@ -55,7 +55,7 @@ public class UsageGraphController {
         monthRadio.setSelected(true); // 기본 선택
 
         group.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
-            if (newToggle == dayRadio) {
+            if (newToggle == dayRadio) { // day->week
                 selectedGroupType = "day";
             } else if (newToggle == monthRadio) {
                 selectedGroupType = "month";

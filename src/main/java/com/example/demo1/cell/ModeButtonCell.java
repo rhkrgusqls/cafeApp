@@ -4,6 +4,7 @@ import com.example.demo1.controller.ModeBtnsController;
 import com.example.demo1.controller.ModeBtnsPriController;
 import com.example.demo1.controller.StoreManagementController;
 import com.example.demo1.dto.StoreDTO;
+import com.example.demo1.properties.ConfigLoader;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TableCell;
 import javafx.scene.layout.AnchorPane;
@@ -33,7 +34,7 @@ public class ModeButtonCell extends TableCell<StoreDTO, Void> {
             FXMLLoader loader;
             AnchorPane pane;
 
-            if ("101".equals(store.getAffiliationCode())) {
+            if (ConfigLoader.getManagerCode().equals(store.getAffiliationCode())) {
                 // 본점: 조회 + 전체조회 버튼
                 loader = new FXMLLoader(getClass().getResource("/com/example/demo1/modeBtnsPri.fxml"));
                 // 본점에서 StuffManagementController를 전달

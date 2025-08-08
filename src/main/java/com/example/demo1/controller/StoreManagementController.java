@@ -49,6 +49,7 @@ public class StoreManagementController implements Initializable {
     @FXML private Button shipmentBtn;
     @FXML private Button usageBtn;
     @FXML private Button flowBtn;
+    @FXML private Button useplaceBtn;
 
     private String loginAffiliationCode;
 
@@ -197,6 +198,22 @@ public class StoreManagementController implements Initializable {
             }
         });
 
+        useplaceBtn.setOnAction(e -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/graphs/usagePlaceGraph.fxml"));
+                Parent root = loader.load();
+
+                Stage stage = new Stage();
+                stage.setTitle("재고 사용처 그래프");
+                stage.setScene(new Scene(root));
+                stage.setResizable(false);
+                stage.centerOnScreen();
+                stage.show();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
         loadStoreList(); // 초기 테이블 데이터 불러오기
     }
 
@@ -279,7 +296,7 @@ public class StoreManagementController implements Initializable {
             Parent root = loader.load();
 
             TotalItemListController controller = loader.getController();
-            controller.setLoginAffiliationCode("101"); // 본점 로그인 기준 전달
+            controller.setLoginAffiliationCode(ConfigLoader.getManagerCode()); // 본점 로그인 기준 전달
 
             Stage stage = new Stage();
             stage.setTitle("전체 재고 보기 (본점)");
