@@ -124,7 +124,7 @@ public class TotalItemListController implements Initializable {
             Parent root;
             Stage currentStage = (Stage) tableView.getScene().getWindow(); // 현재 전체재고 창
 
-            if ("101".equals(loginAffiliationCode)) {
+            if (ConfigLoader.getManagerCode().equals(loginAffiliationCode)) {
                 loader = new FXMLLoader(getClass().getResource("/com/example/demo1/priStockRequest.fxml"));
                 root = loader.load();
 

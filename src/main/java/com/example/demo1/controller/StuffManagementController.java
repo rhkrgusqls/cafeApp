@@ -130,7 +130,7 @@ public class StuffManagementController implements Initializable {
                     StuffDTO clickedRow = row.getItem();
 
                     // 101(본점)이 아닐 때만 itemlist.fxml 팝업 띄우기
-                    if (!"101".equals(loginAffiliationCode)) {
+                    if (!ConfigLoader.getManagerCode().equals(loginAffiliationCode)) {
                         openItemInfoPopup(clickedRow.getItemId());
                     }
                 }
@@ -211,7 +211,7 @@ public class StuffManagementController implements Initializable {
 
         this.affiliationNum.setText(viewAffiliationCode);
 
-        if (!"101".equals(loginAffiliationCode)) { // 분점 로그인 시 확인 필요한 요청 있는 지 확인
+        if (!ConfigLoader.getManagerCode().equals(loginAffiliationCode)) { // 분점 로그인 시 확인 필요한 요청 있는 지 확인
             checkProcessedRequests(loginAffiliationCode);
         }
 
@@ -442,7 +442,7 @@ public class StuffManagementController implements Initializable {
             stage.centerOnScreen();
             stage.setOnHidden(e -> {
                 // loginAffiliationCode가 101이 아닌 경우에만 새로고침
-                if (!"101".equals(loginAffiliationCode)) {
+                if (!ConfigLoader.getManagerCode().equals(loginAffiliationCode)) {
                     loadStuffList();
                 }
             });
