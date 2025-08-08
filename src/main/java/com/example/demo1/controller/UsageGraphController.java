@@ -13,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
+import javafx.util.Duration;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -194,6 +195,9 @@ public class UsageGraphController {
                     newNode.setStyle("-fx-bar-fill: " + color + ";");
 
                     Tooltip tooltip = new Tooltip("기간: " + period + "\n사용량: " + qty);
+                    tooltip.setShowDelay(Duration.ZERO);
+                    tooltip.setHideDelay(Duration.ZERO);
+                    tooltip.setShowDuration(Duration.INDEFINITE);
                     Tooltip.install(newNode, tooltip);
                 }
             });

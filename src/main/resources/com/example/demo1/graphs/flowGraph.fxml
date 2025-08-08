@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.Group?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
@@ -21,32 +19,20 @@
             <Font name="Freestyle Script" size="52.0" />
          </font>
       </Text>
-      <MenuButton fx:id="itemMenu" layoutX="295.0" layoutY="23.0" maxWidth="81.0" minWidth="81.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="81.0" text="ItemID">
+      <MenuButton fx:id="itemMenu" layoutX="558.0" layoutY="29.0" maxWidth="81.0" minWidth="81.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="81.0" text="ItemID">
       </MenuButton>
-      <MenuButton fx:id="affiliationMenu" layoutX="458.0" layoutY="23.0" maxWidth="101.0" minWidth="101.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="101.0" text="Affiliation">
+      <MenuButton fx:id="affiliationMenu" layoutX="721.0" layoutY="29.0" maxWidth="101.0" minWidth="101.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="101.0" text="Affiliation">
       </MenuButton>
-      <Text layoutX="235.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Item:">
+      <Text layoutX="498.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Item:">
          <font>
             <Font name="Comic Sans MS" size="20.0" />
          </font>
       </Text>
-      <Text layoutX="388.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Store:">
+      <Text layoutX="651.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Store:">
          <font>
             <Font name="Comic Sans MS" size="20.0" />
          </font>
       </Text>
-      <Text layoutX="573.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mode:">
-         <font>
-            <Font name="Comic Sans MS" size="20.0" />
-         </font>
-      </Text>
-      <Group layoutX="741.0" layoutY="21.0">
-         <children>
-            <RadioButton fx:id="weekRadio" layoutX="37.0" layoutY="7.0" mnemonicParsing="false" text="Week" />
-            <RadioButton fx:id="monthRadio" layoutX="-37.0" layoutY="7.0" mnemonicParsing="false" text="Month" />
-            <RadioButton fx:id="yearRadio" layoutX="-100.0" layoutY="7.0" mnemonicParsing="false" text="Year" />
-         </children>
-      </Group>
       <LineChart fx:id="flowChart" layoutX="61.0" layoutY="87.0" prefHeight="485.0" prefWidth="761.0">
          <xAxis>
             <CategoryAxis side="BOTTOM" />
