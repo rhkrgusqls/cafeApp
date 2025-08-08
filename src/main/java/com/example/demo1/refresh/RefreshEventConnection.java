@@ -1,5 +1,6 @@
 package com.example.demo1.refresh;
 
+import com.example.demo1.controller.util.RefreshAll;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -58,16 +59,20 @@ public class RefreshEventConnection implements RefreshObserver {
             switch (page) {
                 case "storeManagement":
                     StoreManagementRefresh.refresh();
+                    new RefreshAll();
                     break;
                 case "requestList":
                     RequestListRefresh.refresh();
+                    new RefreshAll();
                     break;
                 case "itemList":
                     ItemListRefresh.refresh();
                     StoreManagementRefresh.refresh();
+                    new RefreshAll();
                     break;
                 case "affiliationRequestList":
                     AffiliationRequestListRefresh.refresh();
+                    new RefreshAll();
                     break;
                 default:
                     System.out.println("Unknown page: " + page);

@@ -4,6 +4,7 @@ import com.example.demo1.controller.util.Cookie;
 import com.example.demo1.dto.HistoryDTO;
 import com.example.demo1.properties.ConfigLoader;
 import com.example.demo1.refresh.AffiliationRequestListRefresh;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -19,6 +20,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public class AffiliationRequestListController {
 
@@ -149,12 +153,42 @@ public class AffiliationRequestListController {
         }).start();
     }
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     // 상태별 필터 적용
     private void filterByState(String state) {
-        if (state == null) {
-            historyTable.setItems(allHistory);
-        } else {
-            historyTable.setItems(allHistory.filtered(o -> state.equalsIgnoreCase(o.getState())));
-        }
+        new Thread(() -> {
+            try {
+                URL url = new URL("http://" + ConfigLoader.getIp() + ":" + ConfigLoader.getPort() + "/ordering/display");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
+                conn.setDoOutput(true);
+
+                String json = String.format("{\"affiliationCode\":\"%s\"}", loginAffiliationCode);
+                conn.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
+
+                InputStream is = conn.getInputStream();
+                List<HistoryDTO> newData = mapper.readValue(is, new TypeReference<List<HistoryDTO>>() {});
+
+                // 클라이언트 필터링: state가 null이면 전체, 아니면 일치하는 항목만
+                List<HistoryDTO> filteredData;
+                if (state == null) {
+                    filteredData = newData;
+                } else {
+                    filteredData = newData.stream()
+                            .filter(h -> state.equalsIgnoreCase(h.getState()))
+                            .toList();
+                }
+
+                Platform.runLater(() -> {
+                    historyTable.setItems(FXCollections.observableArrayList(filteredData));
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
+
 }
