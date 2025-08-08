@@ -12,6 +12,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -20,12 +21,18 @@ import java.util.List;
 
 public class UsageGraphController {
 
-    @FXML private BarChart<String, Number> usageChart;
-    @FXML private MenuButton itemMenu;
-    @FXML private MenuButton affiliationMenu;
-    @FXML private RadioButton weekRadio;
-    @FXML private RadioButton monthRadio;
-    @FXML private RadioButton yearRadio;
+    @FXML
+    private BarChart<String, Number> usageChart;
+    @FXML
+    private MenuButton itemMenu;
+    @FXML
+    private MenuButton affiliationMenu;
+    @FXML
+    private RadioButton dayRadio;
+    @FXML
+    private RadioButton monthRadio;
+    @FXML
+    private RadioButton yearRadio;
 
     private final ObjectMapper mapper = new ObjectMapper();
     private String selectedAffiliation = null;
@@ -41,14 +48,14 @@ public class UsageGraphController {
 
     private void setupToggleGroup() {
         ToggleGroup group = new ToggleGroup();
-        weekRadio.setToggleGroup(group);
+        dayRadio.setToggleGroup(group);
         monthRadio.setToggleGroup(group);
         yearRadio.setToggleGroup(group);
         monthRadio.setSelected(true); // 기본 선택
 
         group.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
-            if (newToggle == weekRadio) {
-                selectedGroupType = "week";
+            if (newToggle == dayRadio) {
+                selectedGroupType = "day";
             } else if (newToggle == monthRadio) {
                 selectedGroupType = "month";
             } else if (newToggle == yearRadio) {
@@ -68,7 +75,8 @@ public class UsageGraphController {
                 conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
 
                 InputStream is = conn.getInputStream();
-                List<ItemDTO> itemList = mapper.readValue(is, new TypeReference<>() {});
+                List<ItemDTO> itemList = mapper.readValue(is, new TypeReference<>() {
+                });
                 is.close();
 
                 Platform.runLater(() -> {
@@ -139,7 +147,8 @@ public class UsageGraphController {
                 conn.setRequestProperty("Cookie", Cookie.getSessionCookie());
 
                 InputStream is = conn.getInputStream();
-                List<ConsumptionDTO> list = mapper.readValue(is, new TypeReference<>() {});
+                List<ConsumptionDTO> list = mapper.readValue(is, new TypeReference<>() {
+                });
                 is.close();
 
                 Platform.runLater(() -> drawGraph(list));
@@ -152,16 +161,45 @@ public class UsageGraphController {
 
     private void drawGraph(List<ConsumptionDTO> list) {
         usageChart.getData().clear();
+        usageChart.setAnimated(false); // 애니메이션 비활성화
+
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("소모량");
-        usageChart.setAnimated(false); // 애니메이션 키면 그래프가 이상해보임
+
+        int previousQuantity = -1;
 
         for (ConsumptionDTO dto : list) {
-            String label = dto.getPeriod(); // 사용된 기간 단위 (예: "2025-08")
-            XYChart.Data<String, Number> data = new XYChart.Data<>(label, dto.getQuantity());
-            series.getData().add(data);
-        }
+            String label = dto.getPeriod(); // 예: "2025-08"
+            int quantity = dto.getQuantity();
 
+            XYChart.Data<String, Number> data = new XYChart.Data<>(label, quantity);
+            series.getData().add(data);
+
+            final int prev = previousQuantity; // for lambda
+            final String period = label;       // for tooltip
+            final int qty = quantity;
+
+            data.nodeProperty().addListener((obs, oldNode, newNode) -> {
+                if (newNode != null) {
+                    String color;
+                    if (prev == -1) {
+                        color = "red";
+                    } else if (qty > prev) {
+                        color = "red";
+                    } else if (qty < prev) {
+                        color = "blue";
+                    } else {
+                        color = "gray";
+                    }
+                    newNode.setStyle("-fx-bar-fill: " + color + ";");
+
+                    Tooltip tooltip = new Tooltip("기간: " + period + "\n사용량: " + qty);
+                    Tooltip.install(newNode, tooltip);
+                }
+            });
+
+            previousQuantity = quantity;
+        }
         usageChart.getData().add(series);
     }
 }
