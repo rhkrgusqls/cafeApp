@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -119,22 +120,12 @@ public class FlowGraphController {
 
         if (logs.isEmpty()) return;
 
-        // 누적량 계산용 변수
         int cumulativeQuantity = 0;
-
-        // 이전 누적량, 날짜, 타입 초기화
         String prevDate = null;
         int prevQuantity = 0;
         String prevType = null;
 
-        // 여러 series를 저장할 리스트
-        List<XYChart.Series<String, Number>> seriesList = new ArrayList<>();
-
-        // 임시 series 생성 및 색상 적용 함수
-        XYChart.Series<String, Number> currentSeries = new XYChart.Series<>();
-        currentSeries.setName("재고량 변화");
-
-        // changeType 별 색상 맵 (CSS 스타일 문자열)
+        // 색상 정의
         Map<String, String> colorMap = Map.of(
                 "INBOUND", "black",
                 "DISPOSAL", "green",
@@ -143,43 +134,38 @@ public class FlowGraphController {
                 "MODIFY", "yellow"
         );
 
+        List<XYChart.Series<String, Number>> seriesList = new ArrayList<>();
+        XYChart.Series<String, Number> currentSeries = new XYChart.Series<>();
+
         for (int i = 0; i < logs.size(); i++) {
             ItemChangeDTO log = logs.get(i);
             cumulativeQuantity += log.getQuantity();
             String date = log.getChangeTime();
+            String type = log.getChangeType();
 
             if (i == 0) {
-                // 첫 데이터는 무조건 추가
-                XYChart.Data<String, Number> point = new XYChart.Data<>(date, cumulativeQuantity);
-                currentSeries.getData().add(point);
+                // 첫 데이터는 무조건 새 시리즈 생성
+                currentSeries = new XYChart.Series<>();
+                currentSeries.setName(type);
+                currentSeries.getData().add(new XYChart.Data<>(date, cumulativeQuantity));
             } else {
-                // 이전 타입과 현재 타입이 다르면 새로운 시리즈 생성
-                if (!log.getChangeType().equals(prevType)) {
-                    // 기존 series 저장
-                    if (!currentSeries.getData().isEmpty()) {
-                        seriesList.add(currentSeries);
-                    }
-                    // 새로운 series 생성
+                if (!type.equals(prevType)) {
+                    // 타입이 바뀌었으면 기존 시리즈 저장 후 새 시리즈 시작
+                    seriesList.add(currentSeries);
+
                     currentSeries = new XYChart.Series<>();
-                    currentSeries.setName(log.getChangeType());
+                    currentSeries.setName(type);
+
+                    // 이전 지점 추가 (시작점)
+                    currentSeries.getData().add(new XYChart.Data<>(prevDate, prevQuantity));
                 }
 
-                // 이전 누적량 (x1, y1)
-                XYChart.Data<String, Number> prevPoint = new XYChart.Data<>(prevDate, prevQuantity);
-                // 현재 누적량 (x2, y2)
-                XYChart.Data<String, Number> currPoint = new XYChart.Data<>(date, cumulativeQuantity);
-
-                // 시리즈에 이전점(시작) 없으면 추가 (처음 점)
-                if (currentSeries.getData().isEmpty()) {
-                    currentSeries.getData().add(prevPoint);
-                }
-                // 현재점 추가
-                currentSeries.getData().add(currPoint);
+                currentSeries.getData().add(new XYChart.Data<>(date, cumulativeQuantity));
             }
 
             prevDate = date;
             prevQuantity = cumulativeQuantity;
-            prevType = log.getChangeType();
+            prevType = type;
         }
 
         // 마지막 시리즈 추가
@@ -187,38 +173,38 @@ public class FlowGraphController {
             seriesList.add(currentSeries);
         }
 
-        // flowChart에 시리즈들 추가 및 색상 적용
-        for (XYChart.Series<String, Number> s : seriesList) {
-            flowChart.getData().add(s);
-
-            // 스타일 적용
-            String typeName = s.getName();
+        // 차트에 시리즈 추가 및 스타일 지정
+        for (XYChart.Series<String, Number> series : seriesList) {
+            String typeName = series.getName();
             String color = colorMap.getOrDefault(typeName, "black");
 
-            // 시리즈 노드 스타일 (선 색상)
-            // 시리즈의 노드는 항상 첫 렌더링 후 생성되므로 runLater로 스타일 적용
+            flowChart.getData().add(series);
+
             Platform.runLater(() -> {
-                Node line = s.getNode().lookup(".chart-series-line");
+                Node line = series.getNode().lookup(".chart-series-line");
                 if (line != null) {
                     line.setStyle("-fx-stroke: " + color + ";");
                 }
 
-                for (XYChart.Data<String, Number> data : s.getData()) {
-                    // 노드 색상 변경 (점 색상)
-                    if (data.getNode() != null) {
-                        data.getNode().setStyle("-fx-background-color: " + color + ", white;");
-                        // or "-fx-background-radius: 5px;" 등도 추가 가능
+                for (XYChart.Data<String, Number> data : series.getData()) {
+                    Node node = data.getNode();
+                    if (node != null) {
+                        node.setStyle("-fx-background-color: " + color + ", white;");
                     }
 
-                    Tooltip tooltip = new Tooltip("날짜: " + data.getXValue() + "\n누적 변화량: " + data.getYValue() + "\n타입: " + typeName);
+                    Tooltip tooltip = new Tooltip("날짜: " + data.getXValue()
+                            + "\n누적 변화량: " + data.getYValue()
+                            + "\n타입: " + typeName);
                     tooltip.setShowDelay(Duration.ZERO);
                     tooltip.setHideDelay(Duration.ZERO);
                     tooltip.setShowDuration(Duration.INDEFINITE);
-                    Tooltip.install(data.getNode(), tooltip);
+                    Tooltip.install(node, tooltip);
                 }
             });
         }
     }
+
+
 
 
     private HttpURLConnection openGetConnection(String apiUrl) throws Exception {

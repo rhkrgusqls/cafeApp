@@ -76,7 +76,7 @@ public class AffiliationRequestListController {
                 HistoryDTO dto = getTableView().getItems().get(getIndex());
 
                 try {
-                    if ("processed".equalsIgnoreCase(dto.getState()) && !"101".equals(loginAffiliationCode)) {
+                    if ("processed".equalsIgnoreCase(dto.getState()) && !ConfigLoader.getManagerCode().equals(loginAffiliationCode)) {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/modeBtnsRC.fxml"));
                         AnchorPane pane = loader.load();
                         ModeBtnsRCController btnController = loader.getController();

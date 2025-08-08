@@ -31,7 +31,7 @@ public class ItemInfoController {
 
     public void setLoginAffiliationCode(String code) {
         this.loginAffiliationCode = code;
-        if ("101".equals(loginAffiliationCode)) {
+        if (ConfigLoader.getManagerCode().equals(loginAffiliationCode)) {
             // 본사일 때 → 입력 가능 + Add 버튼 표시
             itemIdField.setEditable(true);
             nameField.setEditable(true);

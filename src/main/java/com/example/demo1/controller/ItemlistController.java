@@ -48,8 +48,8 @@ public class ItemlistController implements Initializable {
     public void setLoginAffiliationCode(String loginAffiliationCode) {
     //    this.requestMode = true; // 요청 모드 켜기
         this.loginAffiliationCode = loginAffiliationCode;
-        addBtn.setVisible("101".equals(loginAffiliationCode));
-        infoText.setVisible("101".equals(loginAffiliationCode));
+        addBtn.setVisible(ConfigLoader.getManagerCode().equals(loginAffiliationCode));
+        infoText.setVisible(ConfigLoader.getManagerCode().equals(loginAffiliationCode));
     }
 
     public void enablePriStockMode() {
@@ -97,7 +97,7 @@ public class ItemlistController implements Initializable {
                         return;
                     }
 
-                    if ("101".equals(loginAffiliationCode)) {
+                    if (ConfigLoader.getManagerCode().equals(loginAffiliationCode)) {
                         // 본점 일반 모드 → 상태 변경
                         String nextState =
                                 "available".equalsIgnoreCase(selectedItem.getState()) ? "unavailable" : "available";
