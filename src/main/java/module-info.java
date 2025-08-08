@@ -4,6 +4,8 @@ module com.example.demo1 {
     requires javafx.web;
     requires tyrus.standalone.client;
 
+    requires org.apache.poi.poi;
+    requires org.apache.poi.ooxml;
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires net.synedra.validatorfx;
