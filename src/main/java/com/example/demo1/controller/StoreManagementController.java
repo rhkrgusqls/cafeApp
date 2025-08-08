@@ -47,6 +47,7 @@ public class StoreManagementController implements Initializable {
     @FXML private Button itemsBtn;
 
     @FXML private Button shipmentBtn;
+    @FXML private Button usageBtn;
 
     private String loginAffiliationCode;
 
@@ -154,6 +155,22 @@ public class StoreManagementController implements Initializable {
 
                 Stage stage = new Stage();
                 stage.setTitle("출고량 그래프");
+                stage.setScene(new Scene(root));
+                stage.setResizable(false);
+                stage.centerOnScreen();
+                stage.show();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        usageBtn.setOnAction(e -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo1/graphs/usageGraph.fxml"));
+                Parent root = loader.load();
+
+                Stage stage = new Stage();
+                stage.setTitle("사용량 그래프");
                 stage.setScene(new Scene(root));
                 stage.setResizable(false);
                 stage.centerOnScreen();

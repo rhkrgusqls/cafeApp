@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.Group?>
+<?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.RadioButton?>
@@ -11,24 +11,16 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="601.0" prefWidth="863.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.controller.ShipmentGraphController">
+<AnchorPane prefHeight="601.0" prefWidth="863.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.controller.UsageGraphController">
    <children>
       <Circle fill="#ffe52194" layoutX="69.0" layoutY="77.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
       <Circle fill="#fbff2194" layoutX="116.0" layoutY="4.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
       <Circle fill="#ffe12197" layoutX="-11.0" layoutY="117.0" radius="100.0" stroke="TRANSPARENT" strokeType="INSIDE" />
-      <Text layoutX="11.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Shipment Graph">
+      <Text layoutX="11.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Usage Graph">
          <font>
             <Font name="Freestyle Script" size="52.0" />
          </font>
       </Text>
-      <LineChart fx:id="shipmentChart" layoutX="51.0" layoutY="77.0" prefHeight="485.0" prefWidth="761.0">
-         <xAxis>
-            <CategoryAxis side="BOTTOM" />
-         </xAxis>
-         <yAxis>
-            <NumberAxis side="LEFT" />
-         </yAxis>
-      </LineChart>
       <MenuButton fx:id="itemMenu" layoutX="295.0" layoutY="23.0" maxWidth="81.0" minWidth="81.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="81.0" text="ItemID">
       </MenuButton>
       <MenuButton fx:id="affiliationMenu" layoutX="458.0" layoutY="23.0" maxWidth="101.0" minWidth="101.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="101.0" text="Affiliation">
@@ -38,19 +30,27 @@
             <Font name="Comic Sans MS" size="20.0" />
          </font>
       </Text>
-      <Text layoutX="571.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mode:">
-         <font>
-            <Font name="Comic Sans MS" size="20.0" />
-         </font>
-      </Text>
       <Text layoutX="388.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Store:">
          <font>
             <Font name="Comic Sans MS" size="20.0" />
          </font>
       </Text>
-      <Group layoutX="735.0" layoutY="14.0">
+      <BarChart fx:id="usageChart" layoutX="51.0" layoutY="77.0" prefHeight="501.0" prefWidth="761.0">
+        <xAxis>
+          <CategoryAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </BarChart>
+      <Text layoutX="573.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mode:">
+         <font>
+            <Font name="Comic Sans MS" size="20.0" />
+         </font>
+      </Text>
+      <Group layoutX="741.0" layoutY="21.0">
          <children>
-            <RadioButton fx:id="dateRadio" layoutX="37.0" layoutY="7.0" mnemonicParsing="false" text="Date" />
+            <RadioButton fx:id="weekRadio" layoutX="37.0" layoutY="7.0" mnemonicParsing="false" text="Week" />
             <RadioButton fx:id="monthRadio" layoutX="-37.0" layoutY="7.0" mnemonicParsing="false" text="Month" />
             <RadioButton fx:id="yearRadio" layoutX="-100.0" layoutY="7.0" mnemonicParsing="false" text="Year" />
          </children>
