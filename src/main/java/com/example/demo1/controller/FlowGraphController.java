@@ -118,7 +118,7 @@ public class FlowGraphController {
     private void drawChart(List<ItemChangeDTO> logs) {
         flowChart.getData().clear();
         flowChart.setAnimated(false);
-
+        flowChart.layout();
         if (logs.isEmpty()) return;
 
         int cumulativeQuantity = 0;
